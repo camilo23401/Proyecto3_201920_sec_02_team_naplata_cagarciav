@@ -18,9 +18,13 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 
 	private class Arco<R> implements  Comparable <Arco<R>>  {
 		double costo;
+		double costo2;
+		double costo3;
 		R id;
-		public Arco(double pCosto,R pDestino) {
+		public Arco(double pCosto, double pCosto2, double pCosto3,R pDestino) {
 			costo=pCosto;
+			costo2 = pCosto2;
+			costo3 = pCosto3;
 			id=pDestino;
 
 		}
@@ -75,12 +79,12 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		V++;
 	}
 
-	public void addEdge(K idVertexIni, K idVertexFin, double cost) {
+	public void addEdge(K idVertexIni, K idVertexFin, double cost, double cost2, double cost3) {
 		ArregloDinamico<Arco<K>>origen=adj.get(idVertexIni);
 		ArregloDinamico<Arco<K>>destino=adj.get(idVertexFin);
 		if(origen!=null&&destino!=null) {
-			Arco<K>ori=new Arco<K>(cost,idVertexIni);
-			Arco<K>dest=new Arco<K>(cost,idVertexFin);
+			Arco<K>ori=new Arco<K>(cost, cost2, cost3, idVertexIni);
+			Arco<K>dest=new Arco<K>(cost, cost2, cost3, idVertexFin);
 			origen.agregar(dest);
 			destino.agregar(ori);
 			E++;

@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.opencsv.CSVReader;
 
 import jdk.nashorn.internal.parser.JSONParser;
 
@@ -28,6 +29,7 @@ public class MVCModelo
 
 	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(9999999);
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(999999);
+	private ArregloDinamico<ViajeUber> viajesSemanales = new ArregloDinamico<ViajeUber>(1000000);
 	public void cargarInfo() throws IOException
 	{
 		String rutaArchivoVertices = "data/bogota_vertices.txt";
@@ -62,17 +64,33 @@ public class MVCModelo
 			int i=1;
 			while(i<partes.length)
 			{
-
-				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i])));
+				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i])),calcularPeso2(),calcularPeso3());
 				i++;
 			}
 			linea2 = lector2.readLine();
 		}
+		cargarViajesSemanales();
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
 	}
-
-
+	public int cargarViajesSemanales() throws IOException
+	{
+		int contador = 0;
+		String rutaSemanal = "data/bogota-cadastral-2018-1-WeeklyAggregate.csv";
+		CSVReader lector = new CSVReader(new FileReader(rutaSemanal));
+		String [] siguiente;
+		while ((siguiente = lector.readNext()) != null) 
+		{
+			if(contador!=0)
+			{
+				ViajeUber viajeNuevo = new ViajeUber(Integer.parseInt(siguiente[0]), Integer.parseInt(siguiente[1]), Short.parseShort("-1"), Double.parseDouble(siguiente[3]), Short.parseShort("-1"), Short.parseShort(siguiente[2]), Double.parseDouble(siguiente[4]), Double.parseDouble(siguiente[5]), Double.parseDouble(siguiente[6]));
+				viajesSemanales.agregar(viajeNuevo);
+			}
+			contador++;
+		}
+		lector.close();
+		return contador;
+	}
 	public double calcularPeso(int pIdInicio, int pIdFinal)
 	{
 		double rta = 0.0;
@@ -87,8 +105,14 @@ public class MVCModelo
 		}
 		return rta;
 	}
-
-
+	public double calcularPeso2()
+	{
+		return 0.0;
+	}
+	public double calcularPeso3()
+	{
+		return 0.0;
+	}
 	public int darCantidadConectadas() {
 		return grafo.CC();
 	}
