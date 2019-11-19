@@ -32,6 +32,14 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		public double getCosto() {
 			return costo;
 		}
+		public double getCosto2()
+		{
+			return costo2;
+		}
+		public double getCosto3()
+		{
+			return costo3;
+		}
 		public void setCosto(double costo) {
 			this.costo = costo;
 		}
@@ -103,7 +111,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		double cost=0.0;
 		ArregloDinamico<Arco<K>>buscado=adj.get(idVertexFin);
 		if(buscado==null) {
-			System.out.println("No existen arcos con estas caracteristicas");
+			//System.out.println("No existen arcos con estas caracteristicas");
 		}
 		else {
 			boolean encontrado=false;
@@ -117,6 +125,43 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		}
 		return cost;
 	}
+	public double getCost2Arc(K idVertexIni,K idVertexFin) {
+		double cost=0.0;
+		ArregloDinamico<Arco<K>>buscado=adj.get(idVertexFin);
+		if(buscado==null) {
+			//System.out.println("No existen arcos con estas caracteristicas");
+		}
+		else {
+			boolean encontrado=false;
+			for (int i = 0; i < buscado.darTamano()&&!encontrado; i++) {
+				Arco<K>actual=buscado.darElementoPos(i);
+				if(actual.getId()==idVertexIni) {
+					cost=actual.getCosto2();
+					encontrado=true;
+				}
+			}
+		}
+		return cost;
+	}
+	public double getCost3Arc(K idVertexIni,K idVertexFin) {
+		double cost=0.0;
+		ArregloDinamico<Arco<K>>buscado=adj.get(idVertexFin);
+		if(buscado==null) {
+			//System.out.println("No existen arcos con estas caracteristicas");
+		}
+		else {
+			boolean encontrado=false;
+			for (int i = 0; i < buscado.darTamano()&&!encontrado; i++) {
+				Arco<K>actual=buscado.darElementoPos(i);
+				if(actual.getId()==idVertexIni) {
+					cost=actual.getCosto3();
+					encontrado=true;
+				}
+			}
+		}
+		return cost;
+	}
+
 	public void setInfoVertex(K idVertex, T infoVertex) {
 		if(val.getKey(idVertex)==null) {
 			System.out.println("No existe vertice con estas caracteristcas");

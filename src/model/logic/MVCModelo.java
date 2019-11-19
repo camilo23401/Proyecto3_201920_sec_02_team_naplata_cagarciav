@@ -32,6 +32,7 @@ public class MVCModelo
 	private ArregloDinamico<ViajeUber> viajesSemanales = new ArregloDinamico<ViajeUber>(1000000);
 	public void cargarInfo() throws IOException
 	{
+		cargarViajesSemanales();
 		String rutaArchivoVertices = "data/bogota_vertices.txt";
 		FileReader lectorArchivo = new FileReader(rutaArchivoVertices);
 		BufferedReader lector = new BufferedReader(lectorArchivo);
@@ -57,19 +58,20 @@ public class MVCModelo
 		FileReader lectorArchivo2 = new FileReader(rutaArchivoArcos);
 		BufferedReader lector2 = new BufferedReader(lectorArchivo2);
 		String linea2 = lector2.readLine();
+		int j = 0;
 		while(linea2!=null)
 		{
+			j++;
 			String [] partes = linea2.split(" ");
-
 			int i=1;
 			while(i<partes.length)
 			{
-				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i])),calcularPeso2(),calcularPeso3());
+				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i])),calcularPeso2(sacarMovementIdVertices(Integer.parseInt(partes[0])),sacarMovementIdVertices(Integer.parseInt(partes[i]))),calcularPeso3(Integer.parseInt(partes[0]),Integer.parseInt(partes[i])));
 				i++;
+				j++;
 			}
 			linea2 = lector2.readLine();
 		}
-		cargarViajesSemanales();
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
 	}
@@ -105,13 +107,56 @@ public class MVCModelo
 		}
 		return rta;
 	}
-	public double calcularPeso2()
+	public double calcularPeso2(int pMovementIdInicio, int pMovementIdFinal)
 	{
-		return 0.0;
+		double rta = 0.0;
+		if(pMovementIdInicio==pMovementIdFinal)
+		{
+			rta = calcularTiempoPromedioEntreZonas(pMovementIdInicio, pMovementIdFinal);
+			if(rta == 0.0)
+			{
+				rta = 10;
+			}
+		}
+		else
+		{
+			rta = calcularTiempoPromedioEntreZonas(pMovementIdInicio, pMovementIdFinal);
+			if(rta == 0.0)
+			{
+				rta = 100;
+			}
+		}
+		return rta;
 	}
-	public double calcularPeso3()
+	public double calcularTiempoPromedioEntreZonas(int pIdZona1, int pIdZona2)
+	{ 
+		double rta = 0.0;
+		int contador = 0;
+		for(int i=0; i<viajesSemanales.darTamano();i++)
+		{
+			ViajeUber actual = viajesSemanales.darElementoPos(i);
+			if(actual.darSourceid()==pIdZona1&&actual.darDstid()==pIdZona2)
+			{
+				contador++;
+				rta = rta + actual.darTiempoPromedio();
+			}
+		}
+		if(contador!=0)
+		{
+			rta = rta / contador;	
+		}
+		return rta;
+	}
+	public double calcularPeso3(int idIni, int idFin)
 	{
-		return 0.0;
+		double rta = 0.0;
+		double distancia = grafo.getCostArc(idIni, idFin);
+		double tiempo = grafo.getCost2Arc(idIni, idFin);
+		if(tiempo!=0)
+		{
+			rta = distancia/tiempo;
+		}
+		return rta;
 	}
 	public int darCantidadConectadas() {
 		return grafo.CC();
@@ -150,6 +195,16 @@ public class MVCModelo
 			{
 				rta.agregar(actual);	
 			}
+		}
+		return rta;
+	}
+	public int sacarMovementIdVertices(int pIdVertice)
+	{
+		int rta = 0;
+		Coordenadas actual = grafo.getInfoVertex(pIdVertice);
+		if(actual!=null)
+		{
+			rta = actual.darId();		
 		}
 		return rta;
 	}
