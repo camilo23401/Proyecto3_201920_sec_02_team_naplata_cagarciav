@@ -32,7 +32,7 @@ public class MVCModelo
 
 	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(9999999);
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(999999);
-	private HashSeparateChaining<Integer, ViajeUber> viajesSemanales = new HashSeparateChaining<Integer, ViajeUber>(10000000);
+	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(10000000);
 	
 	public void cargarInfo() throws IOException
 	{
@@ -68,7 +68,10 @@ public class MVCModelo
 			int i=1;
 			while(i<partes.length)
 			{
-				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i])),calcularPeso2(sacarMovementIdVertices(Integer.parseInt(partes[0])),sacarMovementIdVertices(Integer.parseInt(partes[i]))),calcularPeso3(Integer.parseInt(partes[0]),Integer.parseInt(partes[i])));
+				double distancia = calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]));
+				double tiempo = calcularPeso2(sacarMovementIdVertices(Integer.parseInt(partes[0])),sacarMovementIdVertices(Integer.parseInt(partes[i])));
+				double velocidad = calcularPeso3(distancia, tiempo);
+				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), distancia,tiempo, velocidad);
 				i++;
 			}
 			linea2 = lector2.readLine();
@@ -87,7 +90,7 @@ public class MVCModelo
 			if(contador!=0)
 			{
 				ViajeUber viajeNuevo = new ViajeUber(Integer.parseInt(siguiente[0]), Integer.parseInt(siguiente[1]), Short.parseShort("-1"), Double.parseDouble(siguiente[3]), Short.parseShort("-1"), Short.parseShort(siguiente[2]), Double.parseDouble(siguiente[4]), Double.parseDouble(siguiente[5]), Double.parseDouble(siguiente[6]));
-				viajesSemanales.putInSet(Integer.parseInt(siguiente[0]), viajeNuevo);
+				viajesSemanales.putInSet(siguiente[0]+"-"+siguiente[1], viajeNuevo);
 			}
 			contador++;
 		}
@@ -113,7 +116,7 @@ public class MVCModelo
 		double rta = 0.0;
 		if(pMovementIdInicio==pMovementIdFinal)
 		{
-			rta = calcularTiempoPromedioEntreZonas(pMovementIdInicio, pMovementIdFinal);
+			rta = calcularTiempoPromedioEntreZonas(pMovementIdInicio+"", pMovementIdFinal+"");
 			if(rta == 0.0)
 			{
 				rta = 10;
@@ -121,7 +124,7 @@ public class MVCModelo
 		}
 		else
 		{
-			rta = calcularTiempoPromedioEntreZonas(pMovementIdInicio, pMovementIdFinal);
+			rta = calcularTiempoPromedioEntreZonas(pMovementIdInicio+"", pMovementIdFinal+"");
 			if(rta == 0.0)
 			{
 				rta = 100;
@@ -129,34 +132,29 @@ public class MVCModelo
 		}
 		return rta;
 	}
-	public double calcularTiempoPromedioEntreZonas(int pIdZona1, int pIdZona2)
+	public double calcularTiempoPromedioEntreZonas(String pIdZona1, String pIdZona2)
 	{ 
 		double rta = 0.0;
 		int contador = 0;
-		Iterator iter = viajesSemanales.getSet(pIdZona1);
+		Iterator iter = viajesSemanales.getSet(pIdZona1+"-"+pIdZona2);
 		while(iter.hasNext())
 		{
-			ViajeUber actual = (ViajeUber) iter.next();
-			if(actual.darDstid()==pIdZona2)
-			{
-				rta += actual.darTiempoPromedio();
-				contador++;
-			}
+			ViajeUber actual = (ViajeUber)iter.next();
+			rta+=actual.darTiempoPromedio();
+			contador++;
 		}
-		if(contador>0)
+		if(contador<=0)
 		{
-			rta = rta/contador;
+			return 0.0;
 		}
-		return rta;
+		return rta/contador;
 	}
-	public double calcularPeso3(int idIni, int idFin)
+	public double calcularPeso3(double pDistancia, double pTiempo)
 	{
 		double rta = 0.0;
-		double distancia = grafo.getCostArc(idIni, idFin);
-		double tiempo = grafo.getCost2Arc(idIni, idFin);
-		if(tiempo!=0)
+		if(pTiempo!=0)
 		{
-			rta = distancia/tiempo;
+			rta = pDistancia/pTiempo;
 		}
 		return rta;
 	}
