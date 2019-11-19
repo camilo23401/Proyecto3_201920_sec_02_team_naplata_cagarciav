@@ -167,7 +167,7 @@ public class MVCModelo
 	{
 		Gson gson = new Gson();
 		String estrucJsonGrafo = gson.toJson(grafo);
-		PrintWriter impresora = new PrintWriter(new FileWriter("data/grafoNoDirigido.json"));
+		PrintWriter impresora = new PrintWriter(new FileWriter(".data/grafoNoDirigido.json"));
 		impresora.print(estrucJsonGrafo);
 	}
 
