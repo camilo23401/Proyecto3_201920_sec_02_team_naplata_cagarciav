@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -16,8 +17,10 @@ import jdk.nashorn.internal.parser.JSONParser;
 
 import com.google.gson.*;
 
+import model.data_structures.ArbolRojoNegro;
 import model.data_structures.ArregloDinamico;
 import model.data_structures.GrafoNoDirigido;
+import model.data_structures.HashSeparateChaining;
 
 
 /**
@@ -29,7 +32,8 @@ public class MVCModelo
 
 	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(9999999);
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(999999);
-	private ArregloDinamico<ViajeUber> viajesSemanales = new ArregloDinamico<ViajeUber>(1000000);
+	private HashSeparateChaining<Integer, ViajeUber> viajesSemanales = new HashSeparateChaining<Integer, ViajeUber>(10000000);
+	
 	public void cargarInfo() throws IOException
 	{
 		cargarViajesSemanales();
@@ -58,17 +62,14 @@ public class MVCModelo
 		FileReader lectorArchivo2 = new FileReader(rutaArchivoArcos);
 		BufferedReader lector2 = new BufferedReader(lectorArchivo2);
 		String linea2 = lector2.readLine();
-		int j = 0;
 		while(linea2!=null)
 		{
-			j++;
 			String [] partes = linea2.split(" ");
 			int i=1;
 			while(i<partes.length)
 			{
 				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i])),calcularPeso2(sacarMovementIdVertices(Integer.parseInt(partes[0])),sacarMovementIdVertices(Integer.parseInt(partes[i]))),calcularPeso3(Integer.parseInt(partes[0]),Integer.parseInt(partes[i])));
 				i++;
-				j++;
 			}
 			linea2 = lector2.readLine();
 		}
@@ -86,7 +87,7 @@ public class MVCModelo
 			if(contador!=0)
 			{
 				ViajeUber viajeNuevo = new ViajeUber(Integer.parseInt(siguiente[0]), Integer.parseInt(siguiente[1]), Short.parseShort("-1"), Double.parseDouble(siguiente[3]), Short.parseShort("-1"), Short.parseShort(siguiente[2]), Double.parseDouble(siguiente[4]), Double.parseDouble(siguiente[5]), Double.parseDouble(siguiente[6]));
-				viajesSemanales.agregar(viajeNuevo);
+				viajesSemanales.putInSet(Integer.parseInt(siguiente[0]), viajeNuevo);
 			}
 			contador++;
 		}
@@ -132,18 +133,19 @@ public class MVCModelo
 	{ 
 		double rta = 0.0;
 		int contador = 0;
-		for(int i=0; i<viajesSemanales.darTamano();i++)
+		Iterator iter = viajesSemanales.getSet(pIdZona1);
+		while(iter.hasNext())
 		{
-			ViajeUber actual = viajesSemanales.darElementoPos(i);
-			if(actual.darSourceid()==pIdZona1&&actual.darDstid()==pIdZona2)
+			ViajeUber actual = (ViajeUber) iter.next();
+			if(actual.darDstid()==pIdZona2)
 			{
+				rta += actual.darTiempoPromedio();
 				contador++;
-				rta = rta + actual.darTiempoPromedio();
 			}
 		}
-		if(contador!=0)
+		if(contador>0)
 		{
-			rta = rta / contador;	
+			rta = rta/contador;
 		}
 		return rta;
 	}
