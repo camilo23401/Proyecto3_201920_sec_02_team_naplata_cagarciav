@@ -47,9 +47,9 @@ public class TestGrafo {
 		grafo.addVertex(0, "Nestor");
 		grafo.addVertex(1, "Camilo");
 		grafo.addVertex(2, "Alejandro");
-		grafo.addEdge(0, 1, 20.00);
-		grafo.addEdge(0, 2, 30.00);
-		grafo.addEdge(2, 1, 40.00);
+		grafo.addEdge(0, 1, 20.00,0,0);
+		grafo.addEdge(0, 2, 30.00,0,0);
+		grafo.addEdge(2, 1, 40.00,0,0);
 		assertEquals(3, grafo.E());
 		assertEquals(20.00, grafo.getCostArc(0, 1), 1);
 		assertEquals(30.00, grafo.getCostArc(0, 2), 1);
@@ -68,11 +68,11 @@ public class TestGrafo {
 		grafo.addVertex(3, "Luis");
 		grafo.addVertex(4, "Jesse");
 		grafo.addVertex(5, "Nelson");
-		grafo.addEdge(0, 1, 20.00);
-		grafo.addEdge(0, 2, 30.00);
-		grafo.addEdge(0, 3, 40.00);
-		grafo.addEdge(0, 4, 40.00);
-		grafo.addEdge(0, 5, 40.00);
+		grafo.addEdge(0, 1, 20.00,0,0);
+		grafo.addEdge(0, 2, 30.00,0,0);
+		grafo.addEdge(0, 3, 40.00,0,0);
+		grafo.addEdge(0, 4, 40.00,0,0);
+		grafo.addEdge(0, 5, 40.00,0,0);
 		assertEquals(5, grafo.E());
 		ArregloDinamico<Integer>adj=(ArregloDinamico<Integer>) grafo.adje(0);
 		for (int i = 0; i < adj.darTamano(); i++) {
@@ -91,12 +91,12 @@ public class TestGrafo {
 		grafo.addVertex(5, "Nelson");
 		grafo.addVertex(6, "nut");
 		grafo.addVertex(7, "nut");
-		grafo.addEdge(0, 1, 20.00);
-		grafo.addEdge(0, 6, 40.00);
-		grafo.addEdge(0, 2, 30.00);
-		grafo.addEdge(0, 3, 40.00);
-		grafo.addEdge(0, 4, 40.00);
-		grafo.addEdge(0, 5, 40.00);
+		grafo.addEdge(0, 1, 20.00,0,0);
+		grafo.addEdge(0, 6, 40.00,0,0);
+		grafo.addEdge(0, 2, 30.00,0,0);
+		grafo.addEdge(0, 3, 40.00,0,0);
+		grafo.addEdge(0, 4, 40.00,0,0);
+		grafo.addEdge(0, 5, 40.00,0,0);
 		assertEquals(6, grafo.E());
 	
 
@@ -115,12 +115,12 @@ public class TestGrafo {
 		grafo.addVertex(6, "nut");
 		grafo.addVertex(7, "nut");
 		grafo.addVertex(9, "nut");
-		grafo.addEdge(0, 1, 20.00);
-		grafo.addEdge(0, 6, 40.00);
-		grafo.addEdge(0, 2, 30.00);
-		grafo.addEdge(0, 3, 40.00);
-		grafo.addEdge(0, 4, 40.00);
-		grafo.addEdge(0, 5, 40.00);
+		grafo.addEdge(0, 1, 20.00,0,0);
+		grafo.addEdge(0, 6, 40.00,0,0);
+		grafo.addEdge(0, 2, 30.00,0,0);
+		grafo.addEdge(0, 3, 40.00,0,0);
+		grafo.addEdge(0, 4, 40.00,0,0);
+		grafo.addEdge(0, 5, 40.00,0,0);
 		grafo.uncheck();
 		assertEquals(3, grafo.CC());
 

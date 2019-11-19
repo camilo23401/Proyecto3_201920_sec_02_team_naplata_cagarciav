@@ -81,9 +81,7 @@ public class Maps extends MapView {
 			        	 pathOpt.setStrokeWeight(1.5);
 			        	 pathOpt.setGeodesic(false);
 			        	 
-			        	 Polyline path = new Polyline(map); 														
-			        	 path.setOptions(pathOpt); 
-			        	 path.setPath(locations);
+			        	
 						initMap( map );
 					}
 				}

@@ -61,6 +61,12 @@ public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
 		elementos[pos]=dato;
 		tamanoAct++;
 	}
+	public void setPos( T dato,int pos )
+	{
+		elementos[pos]=dato;
+		
+	}
+
 
 
 	public int darCapacidad() {
@@ -92,6 +98,9 @@ public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
 		} 
 
 	}
+
+
+
 	public void shellSortString() 
 	{ 
 		int n = tamanoAct; 
@@ -174,6 +183,7 @@ public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
 		return compa;
 	}
 
+	
 
 
 }

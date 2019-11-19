@@ -67,12 +67,13 @@ public class MVCModelo
 			String [] partes = linea2.split(" ");
 			int i=1;
 			while(i<partes.length)
-			{
+			{ 
+				
 				double distancia = calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]));
 				double tiempo = calcularPeso2(sacarMovementIdVertices(Integer.parseInt(partes[0])),sacarMovementIdVertices(Integer.parseInt(partes[i])));
 				double velocidad = calcularPeso3(distancia, tiempo);
 				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), distancia,tiempo, velocidad);
-				i++;
+				
 			}
 			linea2 = lector2.readLine();
 		}
@@ -214,6 +215,10 @@ public class MVCModelo
 		rta[0] = subGrafo.getInfoVertex(pId);
 		rta[1] = subGrafo.getInfoVertex(pIdAdyacente);
 		return rta;
+	}
+	
+	public ArregloDinamico<String>dar5componentes(){
+		return grafo.componentesMasGrandes();
 	}
 
 

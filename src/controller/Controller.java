@@ -5,6 +5,7 @@ import java.util.Scanner;
 import com.sun.javafx.collections.MapAdapterChange;
 import com.teamdev.jxmaps.LatLng;
 
+import model.data_structures.ArregloDinamico;
 import model.logic.Coordenadas;
 import model.logic.MVCModelo;
 import view.MVCView;
@@ -83,6 +84,11 @@ public class Controller {
 					break;
 
 				case 5:
+					ArregloDinamico<String>nov=modelo.dar5componentes();
+					for (int i = 0; i < 5; i++) {
+						System.out.println((i+1)+". Cantidad Conectadas: "+nov.darElementoPos(i).split(",")[1]);
+					}
+					
 					break;	
 					
 				case 6: 

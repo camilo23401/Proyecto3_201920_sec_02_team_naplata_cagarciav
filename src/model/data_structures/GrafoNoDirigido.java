@@ -11,7 +11,8 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	private HashSeparateChaining<K,T>val;
 	private HashSeparateChaining<K, ArregloDinamico<Arco<K>>> adj;
 	private HashSeparateChaining<K,Boolean>mark;
-	private HashSeparateChaining<Integer,K>idconectados;
+	private ArregloDinamico<Integer>cantidadConectados;
+
 	private int capacidad;
 	private int count;//numero de componentes 
 
@@ -69,7 +70,8 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		val=new HashSeparateChaining<K,T>(tamanio);
 		capacidad=tamanio;
 		mark=new HashSeparateChaining<K,Boolean>(tamanio);
-		idconectados=new HashSeparateChaining<Integer, K>(tamanio);
+		cantidadConectados=new ArregloDinamico<Integer>(150);
+		count=0;
 
 
 	}
@@ -206,8 +208,11 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	}
 
 	public void dfs(K s) {
+
 		mark.setValue(s, true);
-		idconectados.putInSet(count, s);
+		int val=cantidadConectados.darElementoPos(count);
+		val++;
+		cantidadConectados.setPos(val, count);
 
 		ArregloDinamico<Arco<K>>lista=adj.get(s);
 		for (int i = 0; i < lista.darTamano(); i++) {
@@ -220,18 +225,20 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 
 
 	}
-	
-	
+
 	public int CC() {
 		uncheck();
-		for (int v = 0; v < capacidad; v++) {
+		for (int v = 0; v < capacidad; v++) {	
+			cantidadConectados.setPos(0, count);
 			if (mark.getPos(v)!=null&&!mark.getPos(v)) {
 				dfs(mark.getPosKey(v));
 				count++;
+
 			}
 		}
 		return count;
 	}
+
 
 
 	public void uncheck() {
@@ -279,5 +286,20 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		}
 		return rta;
 	}
+	
+	public ArregloDinamico<String> componentesMasGrandes() {
+		this.CC();
+		ArregloDinamico<String>ret=new ArregloDinamico<String>(200);
+		for (int i = 0; i < cantidadConectados.darCapacidad(); i++) {
+			K actual=(K) cantidadConectados.darElementoPos(i);
+			if(actual!=null) {
+				ret.agregar((i+1)+","+actual);
+			}
+		}
+		ret.shellSortString();
+		return ret;
+	}
+
+	 
 
 }
