@@ -73,6 +73,9 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 
 
 	}
+	/**
+	 * @return V
+	 */
 	public int V() {
 		return V;
 	}
