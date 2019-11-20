@@ -12,6 +12,8 @@ import java.util.Iterator;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.opencsv.CSVReader;
+import com.teamdev.jxmaps.LatLng;
+import com.teamdev.jxmaps.Polyline;
 
 import jdk.nashorn.internal.parser.JSONParser;
 
@@ -33,7 +35,7 @@ public class MVCModelo
 	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(2000000);
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(5000);
 	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(2000000);
-
+	private ArregloDinamico<Interseccion>inter=new ArregloDinamico<Interseccion>(7000);
 	public void cargarInfo() throws IOException
 	{
 		cargarViajesSemanales();
@@ -81,19 +83,20 @@ public class MVCModelo
 					double lon2=grafo.getInfoVertex(Integer.parseInt(partes[i])).darLongitud();
 					if(lon1>=-74.094723 && lon1<= -74.062707&&lon2>=-74.094723 && lon2<= -74.062707 && lat1>=4.597714 && lat1<=4.621360&& lat2>=4.597714 && lat2<=4.621360)
 					{
-						subGrafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), distancia,tiempo, velocidad);
+						Interseccion agregado=new Interseccion(lat1,lon1,lat2,lon2);
+						inter.agregar(agregado);
 					}
 				}
 				i++;
 			}
-		
+
 			linea2 = lector2.readLine();
-			
-		}
-	 System.out.println(subGrafo.V());
+
+		}	
+
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
-	
+
 	}
 	public int cargarViajesSemanales() throws IOException
 	{
@@ -217,7 +220,7 @@ public class MVCModelo
 				rta.agregar(actual);	
 			}
 		}
-		
+
 		return rta;
 	}
 	public int sacarMovementIdVertices(int pIdVertice)
@@ -243,9 +246,16 @@ public class MVCModelo
 	}
 	public void cargarMapa()
 	{
-		Maps maps = new Maps(sacarCoordenadasVertices(),darsubGrafo());
+		
+		
+		Maps maps = new Maps(sacarCoordenadasVertices(),darsubGrafo(),darArcosRango());
 		maps.initFrame("Mapa");
 	}
 
+
+	public ArregloDinamico<Interseccion> darArcosRango(){
+		return inter;
+
+	}
 
 }

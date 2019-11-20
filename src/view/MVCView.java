@@ -27,8 +27,5 @@ public class MVCView
 			System.out.println(mensaje);
 		}		
 		
-		public void printModelo(MVCModelo modelo)
-		{
-			// TODO implementar
-		}
+	
 }
