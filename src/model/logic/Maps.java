@@ -82,7 +82,22 @@ public class Maps extends MapView {
 			        	 pathOpt.setGeodesic(false);
 			        	 System.out.println("here");
 			        	 GrafoNoDirigido<Integer, Coordenadas>sub=modelo.darsubGrafo();
-			        	
+			        	 for (int i = 0; i < sub.darCapacidad(); i++) {
+							Coordenadas actual=sub.getVertexpos(i);
+							if(actual!=null) {
+								ArregloDinamico<Integer>adj=sub.adyacentes(sub.getVertexPosi(i));
+					
+								for (int j = 0; j < adj.darTamano(); j++) {
+									
+									Coordenadas act2=sub.getInfoVertex(adj.darElementoPos(j));
+									
+									LatLng[] locations1 = {new LatLng(actual.darLatitud(), actual.darLongitud()),new LatLng(act2.darLatitud(), act2.darLongitud())};
+									Polyline path = new Polyline(map); 														
+									path.setOptions(pathOpt); 
+									path.setPath(locations1);
+								}
+							}
+						}
 			             System.out.println("Finaliza carga");
 			    		initMap( map );
 					}
