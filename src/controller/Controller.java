@@ -92,6 +92,7 @@ public class Controller {
 					break;	
 					
 				case 6: 
+					modelo.cargarMapa();
 					break;	
 
 				default: 

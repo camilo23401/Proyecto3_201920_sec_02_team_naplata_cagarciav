@@ -31,77 +31,63 @@ public class Maps extends MapView {
 
 	//Coordenadas del camino a mostrar (secuencia de localizaciones (Lat, Long)) //ACA DEBEN IR LOS VERTICEs
 	public LatLng[] locations = {new LatLng(4.6285797,-74.0649341), new LatLng(4.608550, -74.076443), new LatLng(4.601363, -74.0661), new LatLng(4.5954979,-74.068708) }; //Coordenadas de los vertices inicio, intermedio y fin.		
-	public Maps()
+	public Maps(ArregloDinamico<Coordenadas> pArreglo, GrafoNoDirigido<Integer, Coordenadas> pSubGrafo)
 	{	
 		setOnMapReadyHandler( new MapReadyHandler() {
 			@Override
 			public void onMapReady(MapStatus status)
 			{
-				modelo = new MVCModelo();
-				try
+				ArregloDinamico<Coordenadas> aux = pArreglo;
+				LatLng[] rta = new LatLng[aux.darTamano()];
+				for(int i=0; i< aux.darTamano();i++)
 				{
-					modelo.cargarInfo();
-					ArregloDinamico<Coordenadas> aux = modelo.sacarCoordenadasVertices();
-					LatLng[] rta = new LatLng[aux.darTamano()];
-					for(int i=0; i< aux.darTamano();i++)
+					Coordenadas actual = aux.darElementoPos(i);
+					rta[i] = new LatLng(actual.darLatitud(), actual.darLongitud());
+				}
+				locations = rta;
+				if ( status == MapStatus.MAP_STATUS_OK )
+				{
+					map = getMap();
+
+					// Configuracion de localizaciones intermedias del path (circulos)
+					CircleOptions middleLocOpt= new CircleOptions(); 
+					middleLocOpt.setFillColor("#00FF00");  // color de relleno
+					middleLocOpt.setFillOpacity(0.5);
+					middleLocOpt.setStrokeWeight(1.0);
+
+					for(int i=0; i<locations.length;i++)
 					{
-						Coordenadas actual = aux.darElementoPos(i);
-						rta[i] = new LatLng(actual.darLatitud(), actual.darLongitud());
+						Circle middleLoc1 = new Circle(map);
+						middleLoc1.setOptions(middleLocOpt);
+						middleLoc1.setCenter(locations[i]); 
+						middleLoc1.setRadius(20); //Radio del circulo
 					}
-					locations = rta;
-				}
-				catch(Exception e)
-				{
-					System.out.println("Error");
 
-				}
-				finally
-				{
-					if ( status == MapStatus.MAP_STATUS_OK )
-					{
-						map = getMap();
+					//Configuracion de la linea del camino
+					PolylineOptions pathOpt = new PolylineOptions();
+					pathOpt.setStrokeColor("#FFFF00");	  // color de linea	
+					pathOpt.setStrokeOpacity(1.75);
+					pathOpt.setStrokeWeight(1.5);
+					pathOpt.setGeodesic(false);
+					GrafoNoDirigido<Integer, Coordenadas>sub = pSubGrafo;
+					for (int i = 0; i < sub.darCapacidad(); i++) {
+						Coordenadas actual=sub.getVertexpos(i);
+						if(actual!=null) {
+							ArregloDinamico<Integer>adj=sub.adyacentes(sub.getVertexPosi(i));
+							LatLng act=new LatLng(actual.darLatitud(), actual.darLongitud());
+							for (int j = 0; j < adj.darTamano(); j++) {
 
-						// Configuracion de localizaciones intermedias del path (circulos)
-						CircleOptions middleLocOpt= new CircleOptions(); 
-						middleLocOpt.setFillColor("#00FF00");  // color de relleno
-						middleLocOpt.setFillOpacity(0.5);
-						middleLocOpt.setStrokeWeight(1.0);
+								Coordenadas act2=sub.getInfoVertex(adj.darElementoPos(j));
 
-						for(int i=0; i<locations.length;i++)
-						{
-							Circle middleLoc1 = new Circle(map);
-							middleLoc1.setOptions(middleLocOpt);
-							middleLoc1.setCenter(locations[i]); 
-							middleLoc1.setRadius(20); //Radio del circulo
-						}
-
-						//Configuracion de la linea del camino
-						PolylineOptions pathOpt = new PolylineOptions();
-						pathOpt.setStrokeColor("#FFFF00");	  // color de linea	
-						pathOpt.setStrokeOpacity(1.75);
-						pathOpt.setStrokeWeight(1.5);
-						pathOpt.setGeodesic(false);
-						System.out.println("here");
-						GrafoNoDirigido<Integer, Coordenadas>sub=modelo.darsubGrafo();
-						for (int i = 0; i < sub.darCapacidad(); i++) {
-							Coordenadas actual=sub.getVertexpos(i);
-							if(actual!=null) {
-								ArregloDinamico<Integer>adj=sub.adyacentes(sub.getVertexPosi(i));
-								LatLng act=new LatLng(actual.darLatitud(), actual.darLongitud());
-								for (int j = 0; j < adj.darTamano(); j++) {
-
-									Coordenadas act2=sub.getInfoVertex(adj.darElementoPos(j));
-
-									LatLng[] locations1 = {act,new LatLng(act2.darLatitud(), act2.darLongitud())};
-									Polyline path = new Polyline(map); 														
-									path.setOptions(pathOpt); 
-									path.setPath(locations1);
-								}
+								LatLng[] locations1 = {act,new LatLng(act2.darLatitud(), act2.darLongitud())};
+								Polyline path = new Polyline(map); 														
+								path.setOptions(pathOpt); 
+								path.setPath(locations1);
 							}
 						}
-						System.out.println("Finaliza carga");
-						initMap( map );
 					}
+					System.out.println("Finaliza carga");
+					initMap( map );
 				}
 			}
 		}
@@ -142,10 +128,5 @@ public class Maps extends MapView {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 
-	}
-	public static void main(String [] args)
-	{
-		Maps maps = new Maps();
-		maps.initFrame("Requerimiento X");
 	}
 }

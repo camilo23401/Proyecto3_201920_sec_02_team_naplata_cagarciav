@@ -241,6 +241,11 @@ public class MVCModelo
 	public ArregloDinamico<String>dar5componentes(){
 		return grafo.componentesMasGrandes();
 	}
+	public void cargarMapa()
+	{
+		Maps maps = new Maps(sacarCoordenadasVertices(),darsubGrafo());
+		maps.initFrame("Mapa");
+	}
 
 
 }
