@@ -111,6 +111,17 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		return buscado;
 
 	}
+	public T getVertexpos(int i) {
+		T buscado=val.getPos(i);
+		return buscado;
+
+	}
+	
+	public K getVertexPosi(int i) {
+		K buscado=val.getPosKey(i);
+		return buscado;
+
+	}
 
 	public double getCostArc(K idVertexIni,K idVertexFin) {
 		double cost=0.0;
@@ -204,6 +215,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	public Iterable<K> adje (K idVertex) {
 		ArregloDinamico<Arco<K>>ret=adj.get(idVertex);
 		ArregloDinamico<K>retorno=new ArregloDinamico<K>(2000000);
+		System.out.println(retorno.darTamano());
 		for (int i = 0; i < ret.darTamano(); i++) {
 			retorno.agregar(ret.darElementoPos(i).getId());
 		}
@@ -280,14 +292,12 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	}
 	public ArregloDinamico<K> adyacentes(K pId)
 	{
-		ArregloDinamico<K> rta = new ArregloDinamico<K>(2);
-		Iterable iter = adje(pId);
-		Iterator iterador = iter.iterator();
-		while(iterador.hasNext())
-		{
-			rta.agregar((K)iterador.next());
+		ArregloDinamico<Arco<K>> rta = adj.get(pId);
+		ArregloDinamico<K> rta1=new ArregloDinamico<K>(10000);
+		for (int i = 0; i < rta.darTamano(); i++) {
+			rta1.agregar(rta.darElementoPos(i).id);
 		}
-		return rta;
+		return rta1;
 	}
 	
 	public ArregloDinamico<String> componentesMasGrandes() {

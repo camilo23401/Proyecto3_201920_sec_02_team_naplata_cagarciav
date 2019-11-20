@@ -80,16 +80,16 @@ public class Maps extends MapView {
 			        	 pathOpt.setStrokeOpacity(1.75);
 			        	 pathOpt.setStrokeWeight(1.5);
 			        	 pathOpt.setGeodesic(false);
-			        	 
+			        	 System.out.println("here");
+			        	 GrafoNoDirigido<Integer, Coordenadas>sub=modelo.darsubGrafo();
 			        	
-						initMap( map );
+			             System.out.println("Finaliza carga");
+			    		initMap( map );
 					}
 				}
 			}
 		}
 				);
-
-
 	}
 	public void recuperarCoordenadasVertices(ArregloDinamico<Coordenadas> pArreglo)
 	{

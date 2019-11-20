@@ -30,10 +30,10 @@ import model.data_structures.HashSeparateChaining;
 public class MVCModelo 
 {
 
-	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(9999999);
-	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(999999);
-	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(10000000);
-	
+	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(2000000);
+	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(5000);
+	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(2000000);
+
 	public void cargarInfo() throws IOException
 	{
 		cargarViajesSemanales();
@@ -62,23 +62,38 @@ public class MVCModelo
 		FileReader lectorArchivo2 = new FileReader(rutaArchivoArcos);
 		BufferedReader lector2 = new BufferedReader(lectorArchivo2);
 		String linea2 = lector2.readLine();
+
 		while(linea2!=null)
 		{
 			String [] partes = linea2.split(" ");
 			int i=1;
 			while(i<partes.length)
 			{ 
-				
+
 				double distancia = calcularPeso(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]));
 				double tiempo = calcularPeso2(sacarMovementIdVertices(Integer.parseInt(partes[0])),sacarMovementIdVertices(Integer.parseInt(partes[i])));
 				double velocidad = calcularPeso3(distancia, tiempo);
 				grafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), distancia,tiempo, velocidad);
-				
+				if(grafo.getInfoVertex(Integer.parseInt(partes[i]))!=null&&grafo.getInfoVertex(Integer.parseInt(partes[0]))!=null) {		
+					double lat1=grafo.getInfoVertex(Integer.parseInt(partes[0])).darLatitud();
+					double lon1=grafo.getInfoVertex(Integer.parseInt(partes[0])).darLongitud();
+					double lat2=grafo.getInfoVertex(Integer.parseInt(partes[i])).darLatitud();
+					double lon2=grafo.getInfoVertex(Integer.parseInt(partes[i])).darLongitud();
+					if(lon1>=-74.094723 && lon1<= -74.062707&&lon2>=-74.094723 && lon2<= -74.062707 && lat1>=4.597714 && lat1<=4.621360&& lat2>=4.597714 && lat2<=4.621360)
+					{
+						subGrafo.addEdge(Integer.parseInt(partes[0]), Integer.parseInt(partes[i]), distancia,tiempo, velocidad);
+					}
+				}
+				i++;
 			}
+		
 			linea2 = lector2.readLine();
+			
 		}
+	 System.out.println(subGrafo.E());
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
+	
 	}
 	public int cargarViajesSemanales() throws IOException
 	{
@@ -186,6 +201,11 @@ public class MVCModelo
 	{
 		return grafo;
 	}
+
+	public GrafoNoDirigido<Integer, Coordenadas> darsubGrafo()
+	{
+		return subGrafo;
+	}
 	public ArregloDinamico<Coordenadas> sacarCoordenadasVertices()
 	{
 		ArregloDinamico<Coordenadas> rta = new ArregloDinamico<Coordenadas>(300000);
@@ -216,7 +236,7 @@ public class MVCModelo
 		rta[1] = subGrafo.getInfoVertex(pIdAdyacente);
 		return rta;
 	}
-	
+
 	public ArregloDinamico<String>dar5componentes(){
 		return grafo.componentesMasGrandes();
 	}
