@@ -90,7 +90,7 @@ public class MVCModelo
 			linea2 = lector2.readLine();
 			
 		}
-	 System.out.println(subGrafo.E());
+	 System.out.println(subGrafo.V());
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
 	
@@ -211,12 +211,13 @@ public class MVCModelo
 		ArregloDinamico<Coordenadas> rta = new ArregloDinamico<Coordenadas>(300000);
 		for(int i=0; i<subGrafo.darCapacidad();i++)
 		{
-			Coordenadas actual = subGrafo.getInfoVertex(i);
-			if(actual!=null)
+			if(subGrafo.getVertexPosi(i)!=null)
 			{
+				Coordenadas actual = subGrafo.getInfoVertex(subGrafo.getVertexPosi(i));
 				rta.agregar(actual);	
 			}
 		}
+		
 		return rta;
 	}
 	public int sacarMovementIdVertices(int pIdVertice)

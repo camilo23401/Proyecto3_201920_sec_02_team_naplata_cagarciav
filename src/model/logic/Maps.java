@@ -53,6 +53,7 @@ public class Maps extends MapView {
 				catch(Exception e)
 				{
 					System.out.println("Error");
+
 				}
 				finally
 				{
@@ -65,7 +66,7 @@ public class Maps extends MapView {
 						middleLocOpt.setFillColor("#00FF00");  // color de relleno
 						middleLocOpt.setFillOpacity(0.5);
 						middleLocOpt.setStrokeWeight(1.0);
-						
+
 						for(int i=0; i<locations.length;i++)
 						{
 							Circle middleLoc1 = new Circle(map);
@@ -74,32 +75,32 @@ public class Maps extends MapView {
 							middleLoc1.setRadius(20); //Radio del circulo
 						}
 
-			        	 //Configuracion de la linea del camino
-			        	 PolylineOptions pathOpt = new PolylineOptions();
-			        	 pathOpt.setStrokeColor("#FFFF00");	  // color de linea	
-			        	 pathOpt.setStrokeOpacity(1.75);
-			        	 pathOpt.setStrokeWeight(1.5);
-			        	 pathOpt.setGeodesic(false);
-			        	 System.out.println("here");
-			        	 GrafoNoDirigido<Integer, Coordenadas>sub=modelo.darsubGrafo();
-			        	 for (int i = 0; i < sub.darCapacidad(); i++) {
+						//Configuracion de la linea del camino
+						PolylineOptions pathOpt = new PolylineOptions();
+						pathOpt.setStrokeColor("#FFFF00");	  // color de linea	
+						pathOpt.setStrokeOpacity(1.75);
+						pathOpt.setStrokeWeight(1.5);
+						pathOpt.setGeodesic(false);
+						System.out.println("here");
+						GrafoNoDirigido<Integer, Coordenadas>sub=modelo.darsubGrafo();
+						for (int i = 0; i < sub.darCapacidad(); i++) {
 							Coordenadas actual=sub.getVertexpos(i);
 							if(actual!=null) {
 								ArregloDinamico<Integer>adj=sub.adyacentes(sub.getVertexPosi(i));
-					
+								LatLng act=new LatLng(actual.darLatitud(), actual.darLongitud());
 								for (int j = 0; j < adj.darTamano(); j++) {
-									
+
 									Coordenadas act2=sub.getInfoVertex(adj.darElementoPos(j));
-									
-									LatLng[] locations1 = {new LatLng(actual.darLatitud(), actual.darLongitud()),new LatLng(act2.darLatitud(), act2.darLongitud())};
+
+									LatLng[] locations1 = {act,new LatLng(act2.darLatitud(), act2.darLongitud())};
 									Polyline path = new Polyline(map); 														
 									path.setOptions(pathOpt); 
 									path.setPath(locations1);
 								}
 							}
 						}
-			             System.out.println("Finaliza carga");
-			    		initMap( map );
+						System.out.println("Finaliza carga");
+						initMap( map );
 					}
 				}
 			}
