@@ -184,22 +184,46 @@ public class MVCModelo
 	public void crearJSON() throws IOException
 	{
 		Gson gson = new Gson();
-		String estrucJsonGrafo = gson.toJson(grafo);
-		PrintWriter impresora = new PrintWriter(new FileWriter(".data/grafoNoDirigido.json"));
-		impresora.print(estrucJsonGrafo);
+		String txt = gson.toJson(grafo);
+
+		try(PrintWriter escritor = new PrintWriter(new FileWriter("./data/grafo.json")))
+		{
+			escritor.print(txt);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
-	public void tomarJson() throws IOException
+	public void leerJSON()
 	{
-		Type caracteristicas = new TypeToken<GrafoNoDirigido<Integer,Coordenadas>>(){}.getType();
+		Type tipo = new TypeToken<GrafoNoDirigido<Integer,Coordenadas>>(){}.getType();
 		Gson gson = new Gson();
-		FileReader lectorArchivos = new FileReader("data/grafoNoDirigido.json");
-		JsonReader parser = new JsonReader(lectorArchivos);
-		JsonElement aux = new JsonParser().parse(parser);
-		GrafoNoDirigido<Integer, Coordenadas> grafoAux = gson.fromJson(aux, caracteristicas);
-		grafo = grafoAux;
-		lectorArchivos.close();
+		try 
+		{
+			JsonReader lector = new JsonReader(new FileReader("./data/grafo.json"));
+			JsonElement objeto = new JsonParser().parse(lector);
+			GrafoNoDirigido<Integer,Coordenadas> grafoRecuperado = gson.fromJson(objeto, tipo);
+			grafo = grafoRecuperado;
+			lector.close();
+			cargarViajesSemanales();
+			Iterator<Integer> it = grafo.recuperados.keys();
+			while(it.hasNext())
+			{
+				Coordenadas agregado = grafo.recuperados.get(it.next());
+				if(agregado.darLongitud() >= -74.094723 && agregado.darLongitud() <=  -74.062707 && agregado.darLatitud() >= 4.597714 && agregado.darLatitud() <=  4.621360)
+				{
+					inter.agregar(agregado);
+				}
+			}
+		}
+		catch (Exception e)	
+		{ 
+			e.printStackTrace();
+		}
 	}
+
 	public GrafoNoDirigido<Integer, Coordenadas> darGrafo()
 	{
 		return grafo;
@@ -246,8 +270,8 @@ public class MVCModelo
 	}
 	public void cargarMapa()
 	{
-		
-		
+
+
 		Maps maps = new Maps(sacarCoordenadasVertices(),darsubGrafo(),darArcosRango());
 		maps.initFrame("Mapa");
 	}
