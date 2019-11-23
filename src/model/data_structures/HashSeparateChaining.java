@@ -90,7 +90,7 @@ public class HashSeparateChaining<K extends Comparable<K>,V> implements HashTabl
 		int pos=hashCode(llave);
 		V buscado=null;
 		NodoHash<K,V>actual=listaNodos.darElementoPos(pos);	
-		if(actual!=null&&actual.getLlave().compareTo(llave)==0&&!encontrado) {
+		if(actual!=null&&actual.getLlave().compareTo(llave)==0.0&&!encontrado) {
 			encontrado=true;
 			buscado=actual.getValor();
 		}

@@ -1,6 +1,7 @@
 package model.logic;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Iterator;
 
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.opencsv.CSVReader;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.Polyline;
@@ -32,9 +34,9 @@ import model.data_structures.HashSeparateChaining;
 public class MVCModelo 
 {
 
-	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(2000000);
+	private GrafoNoDirigido<Integer, Coordenadas> grafo = new GrafoNoDirigido<Integer, Coordenadas>(500000);
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(5000);
-	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(2000000);
+	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(1000000);
 	private ArregloDinamico<Interseccion>inter=new ArregloDinamico<Interseccion>(7000);
 	public void cargarInfo() throws IOException
 	{
@@ -183,44 +185,43 @@ public class MVCModelo
 
 	public void crearJSON() throws IOException
 	{
-		Gson gson = new Gson();
-		String txt = gson.toJson(grafo);
-
-		try(PrintWriter escritor = new PrintWriter(new FileWriter("./data/grafo.json")))
+		try
 		{
-			escritor.print(txt);
+			Gson gson = new Gson();
+			FileWriter o = new FileWriter("./data/grafoNoDirigido.txt");
+			gson.toJson(this, o);
+			o.close();
+			
 		}
-		catch(Exception e)
+		catch (IOException error)
 		{
-			e.printStackTrace();
+			System.out.println("error");
 		}
 	}
 
 	public void leerJSON()
 	{
-		Type tipo = new TypeToken<GrafoNoDirigido<Integer,Coordenadas>>(){}.getType();
-		Gson gson = new Gson();
-		try 
+		try
 		{
-			JsonReader lector = new JsonReader(new FileReader("./data/grafo.json"));
-			JsonElement objeto = new JsonParser().parse(lector);
-			GrafoNoDirigido<Integer,Coordenadas> grafoRecuperado = gson.fromJson(objeto, tipo);
-			grafo = grafoRecuperado;
-			lector.close();
-			cargarViajesSemanales();
-			Iterator<Integer> it = grafo.recuperados.keys();
-			while(it.hasNext())
-			{
-				Coordenadas agregado = grafo.recuperados.get(it.next());
-				if(agregado.darLongitud() >= -74.094723 && agregado.darLongitud() <=  -74.062707 && agregado.darLatitud() >= 4.597714 && agregado.darLatitud() <=  4.621360)
-				{
-					inter.agregar(agregado);
-				}
-			}
+			grafo = null;
+			inter = null;
+			Gson gson = new Gson();
+			FileReader i = new FileReader("./data/grafoNoDirigido.txt");
+			MVCModelo datos = gson.fromJson(i, this.getClass());
+			i.close();
+			grafo = datos.grafo;
+			inter = datos.inter;
+			grafo = null;
+			inter = null;
+		 
+			System.out.println("Cantidad vertices:"+grafo.V());
+			System.out.println("Cantidad arco:"+grafo.E());
 		}
-		catch (Exception e)	
-		{ 
+		catch (IOException e)
+		{
 			e.printStackTrace();
+			System.out.println("Error leyendo archivo");
+			
 		}
 	}
 

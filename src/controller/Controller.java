@@ -46,6 +46,16 @@ public class Controller {
 					try
 					{
 						modelo.cargarInfo();	
+						int conec=modelo.darCantidadConectadas();
+						System.out.println("Hay "+conec+" componentes conectadas");
+						System.out.println("5 componentes mas conectadas");
+						ArregloDinamico<String>nov=modelo.dar5componentes();
+						for (int i = 0; i < 5; i++) {
+							System.out.println((i+1)+". Vertices Conectados: "+nov.darElementoPos(i).split(",")[1]);
+						}
+						System.out.println("Esperar que el mapa cargue completamente para continuar");
+						modelo.cargarMapa();
+						System.out.println("Mapa cargado");
 						System.out.println("Se cargaron satisfactoriamente los datos al sistema");
 					}
 					catch(Exception e)
@@ -55,44 +65,45 @@ public class Controller {
 					break;
 
 				case 2:
-					int conec=modelo.darCantidadConectadas();
-					System.out.println("Hay "+conec+" componentes conectadas");
-					break;
-
-				case 3:
 					try
 					{
+						System.out.println("Creando archivo");
 						modelo.crearJSON();
 						System.out.println("Se creó el archivo de forma satisfactoria");
 					}
 					catch(Exception e)
 					{
-						System.out.println("Se produjo un error creando el archivo JSON: " + e.getMessage());
+						e.printStackTrace();
+					
 					}
 					break;
 
-				case 4:
+				case 3:
 					try
 					{
-						modelo.tomarJson();
+					modelo.leerJSON();	
+					int conec=modelo.darCantidadConectadas();
+					System.out.println("Hay "+conec+" componentes conectadas");
 						System.out.println("Se cargó la información correctamente desde el archivo JSON");
 					}
 					catch(Exception e)
 					{
+						e.printStackTrace();
 						System.out.println("Se produjo un error leyendo el archivo JSON: " + e.getMessage());
 					}
 					break;
 
+				case 4:
+					
+					break;
+
 				case 5:
-					ArregloDinamico<String>nov=modelo.dar5componentes();
-					for (int i = 0; i < 5; i++) {
-						System.out.println((i+1)+". Cantidad Conectadas: "+nov.darElementoPos(i).split(",")[1]);
-					}
+					
 					
 					break;	
 					
 				case 6: 
-					modelo.cargarMapa();
+					
 					break;	
 
 				default: 
