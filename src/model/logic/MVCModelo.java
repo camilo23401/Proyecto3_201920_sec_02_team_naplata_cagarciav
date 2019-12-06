@@ -22,6 +22,7 @@ import jdk.nashorn.internal.parser.JSONParser;
 import com.google.gson.*;
 
 import model.data_structures.ArbolRojoNegro;
+import model.data_structures.Arco;
 import model.data_structures.ArregloDinamico;
 import model.data_structures.GrafoNoDirigido;
 import model.data_structures.HashSeparateChaining;
@@ -188,12 +189,12 @@ public class MVCModelo
 		try
 		{
 			Gson gson = new Gson();
-			FileWriter o = new FileWriter("./data/grafoNoDirigido.txt");
-			gson.toJson(this, o);
-			o.close();
-			
+			String mierfda = gson.toJson(grafo);
+			PrintWriter p = new PrintWriter(new FileWriter("./data/grafoNoDirigido.txt"), true);
+			p.print(mierfda);
+			p.close();
 		}
-		catch (IOException error)
+		catch (Exception error)
 		{
 			System.out.println("error");
 		}
@@ -203,25 +204,16 @@ public class MVCModelo
 	{
 		try
 		{
-			grafo = null;
-			inter = null;
 			Gson gson = new Gson();
-			FileReader i = new FileReader("./data/grafoNoDirigido.txt");
-			MVCModelo datos = gson.fromJson(i, this.getClass());
-			i.close();
-			grafo = datos.grafo;
-			inter = datos.inter;
-			grafo = null;
-			inter = null;
-		 
-			System.out.println("Cantidad vertices:"+grafo.V());
-			System.out.println("Cantidad arco:"+grafo.E());
+			Type type = new TypeToken<GrafoNoDirigido<Integer,Coordenadas>>(){}.getType();
+			JsonReader lector = new JsonReader(new FileReader("./data/grafoNoDirigido.txt"));
+			JsonElement element = new JsonParser().parse(lector);
+			grafo = gson.fromJson(element, type);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			System.out.println("Error leyendo archivo");
-			
 		}
 	}
 
@@ -275,6 +267,23 @@ public class MVCModelo
 
 		Maps maps = new Maps(sacarCoordenadasVertices(),darsubGrafo(),darArcosRango());
 		maps.initFrame("Mapa");
+	}
+	
+	public void cargarMapaCamino(LatLng inicio,LatLng fin,ArregloDinamico<Interseccion>arcos) {
+		Maps maps = new Maps(inicio,fin,arcos);
+		maps.initFrame("Mapa");
+	}
+
+	public int darIdVertice(double lon,double lat) {
+		int pos=-1;
+		for (int i = 0; i < grafo.darCapacidad(); i++) {
+			Coordenadas actual=grafo.getVertexpos(i);
+			if(actual!=null&&actual.darLatitud()==lat&&actual.darLongitud()==lon) {
+				
+				pos= grafo.getVertexPosi(i);
+			}
+		}		
+		return pos;
 	}
 
 

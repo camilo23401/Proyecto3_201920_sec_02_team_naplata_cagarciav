@@ -17,7 +17,8 @@ public class MVCView
 			System.out.println("1. Cargar datos y crear grafo");
 			System.out.println("2. Crear archivo JSON desde los datos cargados");
 			System.out.println("3. Leer archivo JSON preexistente");
-			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
+			System.out.println("4. Encontrar	el	camino	de	costo	mínimo	 para un	viaje	entre	dos	localizaciones	geográficas	de	la	ciudad(Por tiempo promedio)	"); 
+	      	System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}
 
 		public void printMessage(String mensaje) {

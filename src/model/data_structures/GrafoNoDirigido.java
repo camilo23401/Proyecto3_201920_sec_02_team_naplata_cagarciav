@@ -18,50 +18,6 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	private int count;//numero de componentes 
 
 
-	private class Arco<R> implements  Comparable <Arco<R>>  {
-		double costo;
-		double costo2;
-		double costo3;
-		R id;
-		public Arco(double pCosto, double pCosto2, double pCosto3,R pDestino) {
-			costo=pCosto;
-			costo2 = pCosto2;
-			costo3 = pCosto3;
-			id=pDestino;
-
-		}
-
-		public double getCosto() {
-			return costo;
-		}
-		public double getCosto2()
-		{
-			return costo2;
-		}
-		public double getCosto3()
-		{
-			return costo3;
-		}
-		public void setCosto(double costo) {
-			this.costo = costo;
-		}
-
-		public R getId() {
-			return id;
-		}
-		public void setId(R origen) {
-			this.id = origen;
-		}
-
-		@Override
-		public int compareTo(GrafoNoDirigido<K, T>.Arco<R> o) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-
-	}
-
 	public GrafoNoDirigido(int tamanio) {
 
 		if (V < 0) throw new IllegalArgumentException("La cantidad de vertices debe ser positivos");
@@ -71,7 +27,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		val=new HashSeparateChaining<K,T>(tamanio);
 		capacidad=tamanio;
 		mark=new HashSeparateChaining<K,Boolean>(tamanio);
-		cantidadConectados=new ArregloDinamico<Integer>(150);
+		cantidadConectados=new ArregloDinamico<Integer>(152);
 		count=0;
 		recuperados = new HashSeparateChaining<K, T>(tamanio);
 	}
@@ -96,8 +52,8 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		ArregloDinamico<Arco<K>>origen=adj.get(idVertexIni);
 		ArregloDinamico<Arco<K>>destino=adj.get(idVertexFin);
 		if(origen!=null&&destino!=null) {
-			Arco<K>ori=new Arco<K>(cost, cost2, cost3, idVertexIni);
-			Arco<K>dest=new Arco<K>(cost, cost2, cost3, idVertexFin);
+			Arco<K>ori=new Arco<K>(cost, cost2, cost3, idVertexIni,idVertexFin);
+			Arco<K>dest=new Arco<K>(cost, cost2, cost3, idVertexFin,idVertexIni);
 			origen.agregar(dest);
 			destino.agregar(ori);
 			E++;
@@ -116,7 +72,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		return buscado;
 
 	}
-	
+
 	public K getVertexPosi(int i) {
 		K buscado=val.getPosKey(i);
 		return buscado;
@@ -133,7 +89,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 			boolean encontrado=false;
 			for (int i = 0; i < buscado.darTamano()&&!encontrado; i++) {
 				Arco<K>actual=buscado.darElementoPos(i);
-				if(actual.getId()==idVertexIni) {
+				if(actual.getDestino()==idVertexIni) {
 					cost=actual.getCosto();
 					encontrado=true;
 				}
@@ -151,7 +107,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 			boolean encontrado=false;
 			for (int i = 0; i < buscado.darTamano()&&!encontrado; i++) {
 				Arco<K>actual=buscado.darElementoPos(i);
-				if(actual.getId()==idVertexIni) {
+				if(actual.getDestino()==idVertexIni) {
 					cost=actual.getCosto2();
 					encontrado=true;
 				}
@@ -169,7 +125,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 			boolean encontrado=false;
 			for (int i = 0; i < buscado.darTamano()&&!encontrado; i++) {
 				Arco<K>actual=buscado.darElementoPos(i);
-				if(actual.getId()==idVertexIni) {
+				if(actual.getDestino()==idVertexIni) {
 					cost=actual.getCosto3();
 					encontrado=true;
 				}
@@ -194,7 +150,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		boolean encontrado2=false;
 		for (int i = 0; i <inic.darTamano()&&!encontrado1; i++) {
 			Arco<K>actual=inic.darElementoPos(i);
-			if(actual.getId()==idVertexFin) {
+			if(actual.getDestino()==idVertexFin) {
 				encontrado1=true;
 				actual.setCosto(cost);
 			}
@@ -202,7 +158,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		}
 		for (int i = 0; i <fin.darTamano()&&!encontrado2; i++) {
 			Arco<K>actual=fin.darElementoPos(i);
-			if(actual.getId()==idVertexIni) {
+			if(actual.getDestino()==idVertexIni) {
 				encontrado2=true;
 				actual.setCosto(cost);
 			}
@@ -217,7 +173,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		ArregloDinamico<K>retorno=new ArregloDinamico<K>(2000000);
 		System.out.println(retorno.darTamano());
 		for (int i = 0; i < ret.darTamano(); i++) {
-			retorno.agregar(ret.darElementoPos(i).getId());
+			retorno.agregar(ret.darElementoPos(i).getDestino());
 		}
 		return retorno;
 	}
@@ -231,7 +187,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 
 		ArregloDinamico<Arco<K>>lista=adj.get(s);
 		for (int i = 0; i < lista.darTamano(); i++) {
-			K destino=lista.darElementoPos(i).getId();
+			K destino=lista.darElementoPos(i).getDestino();
 			if(!marked(destino)) {
 				mark.setValue(destino, true);
 				dfs(destino);		
@@ -239,6 +195,10 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		}
 
 
+	}
+
+	public K getKeyValue(T valor) {
+		return val.getKeyWithValue(valor);
 	}
 
 	public int CC() {
@@ -290,16 +250,13 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	{
 		return capacidad;
 	}
-	public ArregloDinamico<K> adyacentes(K pId)
+	public ArregloDinamico<Arco<K>> adyacentes(K pId)
 	{
 		ArregloDinamico<Arco<K>> rta = adj.get(pId);
-		ArregloDinamico<K> rta1=new ArregloDinamico<K>(10000);
-		for (int i = 0; i < rta.darTamano(); i++) {
-			rta1.agregar(rta.darElementoPos(i).id);
-		}
-		return rta1;
+		return rta;
+
 	}
-	
+
 	public ArregloDinamico<String> componentesMasGrandes() {
 		this.CC();
 		ArregloDinamico<String>ret=new ArregloDinamico<String>(200);
@@ -313,6 +270,6 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		return ret;
 	}
 
-	 
+
 
 }

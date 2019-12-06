@@ -90,6 +90,7 @@ public class HashSeparateChaining<K extends Comparable<K>,V> implements HashTabl
 		int pos=hashCode(llave);
 		V buscado=null;
 		NodoHash<K,V>actual=listaNodos.darElementoPos(pos);	
+
 		if(actual!=null&&actual.getLlave().compareTo(llave)==0.0&&!encontrado) {
 			encontrado=true;
 			buscado=actual.getValor();
@@ -152,6 +153,19 @@ public class HashSeparateChaining<K extends Comparable<K>,V> implements HashTabl
 			set.next();
 		}
 		return i;
+	}
+
+	public K getKeyWithValue(V value) {
+		K ret=null;
+		for (int i = 0; i < listaNodos.darCapacidad(); i++) {
+			NodoHash<K,V>actual=listaNodos.darElementoPos(i);
+			if(actual!=null) {
+				if(actual.getValor()==value) {
+					ret=actual.getLlave();
+				}
+			}
+		}
+		return ret;
 	}
 
 	@Override
