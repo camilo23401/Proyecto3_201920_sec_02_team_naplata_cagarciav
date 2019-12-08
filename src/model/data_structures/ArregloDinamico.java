@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @author Fernando De la Rosa
  *
  */
-public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
+public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T>  {
 	private int tamanoMax;
 	/**
 	 * Numero de elementos presentes en el arreglo (de forma compacta desde la posicion 0)
@@ -64,7 +64,7 @@ public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
 	public void setPos( T dato,int pos )
 	{
 		elementos[pos]=dato;
-		
+
 	}
 
 
@@ -112,6 +112,26 @@ public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
 				T temp = elementos[i]; 
 				int j; 
 				for (j = i; j >= intervalo &&compareToString((String)this.darElementoPos(j-intervalo),(String)temp)<0; j -= intervalo) {
+					elementos[j] = elementos[j - intervalo]; 
+				}
+
+				elementos[j] = temp; 
+			} 
+		} 
+
+	}
+	
+	public void shellSortStringDouble() 
+	{ 
+		int n = tamanoAct; 
+
+		for (int intervalo = n/2; intervalo > 0; intervalo /= 2) 
+		{ 
+			for (int i = intervalo; i < n; i += 1) 
+			{ 
+				T temp = elementos[i]; 
+				int j; 
+				for (j = i; j >= intervalo &&compareToStringDouble((String)this.darElementoPos(j-intervalo),(String)temp)>0; j -= intervalo) {
 					elementos[j] = elementos[j - intervalo]; 
 				}
 
@@ -183,7 +203,21 @@ public class ArregloDinamico<T extends Comparable<T> > implements Iterable<T> {
 		return compa;
 	}
 
-	
+	public int compareToStringDouble(String comp1 ,String comp) {
+		double comp1val=Double.parseDouble(comp1.split(",")[1]);
+		double comp2val=Double.parseDouble(comp.split(",")[1]);
+		double comparacion = comp1val-comp2val;
+		int compa=0;
+		if(comparacion > 0){
+			compa=1;
+		}
+		else if(comparacion < 0){
+			compa=-1;
+		}
+
+		return compa;
+	}
+
 
 
 }

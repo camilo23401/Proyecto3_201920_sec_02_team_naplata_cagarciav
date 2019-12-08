@@ -1,5 +1,7 @@
 package model.data_structures;
 
+
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class GrafoNoDirigido<K extends Comparable<K>,T> {
@@ -13,7 +15,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	private HashSeparateChaining<K,Boolean>mark;
 	public HashSeparateChaining<K, T> recuperados;
 	private ArregloDinamico<Integer>cantidadConectados;
-
+	private ArrayList<ArrayList<K>>conectadosa;
 	private int capacidad;
 	private int count;//numero de componentes 
 
@@ -30,6 +32,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		cantidadConectados=new ArregloDinamico<Integer>(152);
 		count=0;
 		recuperados = new HashSeparateChaining<K, T>(tamanio);
+		conectadosa=new ArrayList<ArrayList<K>>();
 	}
 	/**
 	 * @return V
@@ -189,6 +192,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		for (int i = 0; i < lista.darTamano(); i++) {
 			K destino=lista.darElementoPos(i).getDestino();
 			if(!marked(destino)) {
+			
 				mark.setValue(destino, true);
 				dfs(destino);		
 			}
@@ -203,10 +207,14 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 
 	public int CC() {
 		uncheck();
+		int cantcon=0;
 		for (int v = 0; v < capacidad; v++) {	
 			cantidadConectados.setPos(0, count);
 			if (mark.getPos(v)!=null&&!mark.getPos(v)) {
+				conectadosa.add(new ArrayList<K>());
+
 				dfs(mark.getPosKey(v));
+				cantcon++;
 				count++;
 
 			}
@@ -233,19 +241,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	}
 
 
-	public Iterable<K>getCC(K idVertex){
-		this.uncheck();
-		this.dfs(idVertex);
-		ArregloDinamico<K>retorno=new ArregloDinamico<K>(100000);
-		for (int i = 0; i < mark.darCapacidad(); i++) {
-			K actual=mark.getPosKey(i);
-			if(actual!=null&&mark.get(actual)) {
-				retorno.agregar(actual);
-			}
-		}
-		return retorno;
 
-	}
 	public int darCapacidad()
 	{
 		return capacidad;
@@ -270,6 +266,8 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		return ret;
 	}
 
-
+	public ArrayList<ArrayList<K>>darVerticesComponentes(){
+		return conectadosa;
+	}
 
 }

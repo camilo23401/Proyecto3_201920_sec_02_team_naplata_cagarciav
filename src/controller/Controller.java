@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.sun.javafx.collections.MapAdapterChange;
@@ -53,12 +54,11 @@ public class Controller {
 					System.out.println("Hay "+conec+" componentes conectadas");
 					System.out.println("5 componentes mas conectadas");
 					ArregloDinamico<String>nov=modelo.dar5componentes();
+					System.out.println(nov.darTamano());
 					for (int i = 0; i < 5; i++) {
 						System.out.println((i+1)+". Vertices Conectados: "+nov.darElementoPos(i).split(",")[1]);
 					}
-					System.out.println("Esperar que el mapa cargue completamente para continuar");
-					modelo.cargarMapa();
-					System.out.println("Mapa cargado");
+
 					System.out.println("Se cargaron satisfactoriamente los datos al sistema");
 				}
 				catch(Exception e)
@@ -121,21 +121,20 @@ public class Controller {
 						hav=+actual.getCosto();
 					}
 					ArregloDinamico<Interseccion>cor=new ArregloDinamico<Interseccion>(1000);
-
-					for (int i = 0; i < path.darTamano(); i++) {
-						Coordenadas inic=new Coordenadas(lat1,lon1,0);
+					Coordenadas inic=new Coordenadas(lat1,lon1,0);
+					for (int i = path.darTamano(); i >0; i--) {
 						Arco<Integer>act3=path.darElementoPos(i);
 						Coordenadas act=modelo.darGrafo().getInfoVertex(act3.getDestino());
 						Interseccion agrega=new Interseccion(inic.darLatitud(),inic.darLongitud(),act.darLatitud(),act.darLongitud());
 						cor.agregar(agrega);
-						inic=act;
+						inic=new Coordenadas(agrega.getLatin1(),agrega.getLonin2(),0);
 					}
 					tiempoPromedio=tiempoPromedio/path.darTamano();
 					System.out.println("Tiempo Promedio "+tiempoPromedio);
 					System.out.println("Distancia Haversine "+hav);
-					LatLng inic=new LatLng(lat1, lon1);
+					LatLng inic2=new LatLng(lat1, lon1);
 					LatLng fini=new LatLng(lat2, lon2);
-					modelo.cargarMapaCamino(inic, fini, cor);
+					modelo.cargarMapaCamino(inic2, fini, cor);
 
 				}else {
 					System.out.println("No hay vertices con estas caracteristicas");
@@ -144,12 +143,29 @@ public class Controller {
 				break;
 
 			case 5:
-
+				System.out.println("Ingresar N ");
+				int n  = Integer.parseInt(lector.next());
+				ArregloDinamico<String>list=modelo.darNVerticesConMenorVelocidad();
+				System.out.println("Vertice,Coordenadadas,Velocidad Promedio");
+				ArregloDinamico<Coordenadas>vertic=new ArregloDinamico<Coordenadas>(100);
+				for (int i = 1; i <= n; i++) {
+					String elmenq=list.darElementoPos(i);
+					String[]el=elmenq.split(",");
+					Coordenadas act=modelo.darGrafo().getInfoVertex(Integer.parseInt(el[0]));
+					System.out.println(el[0]+", "+act.darLatitud()+", "+act.darLongitud()+","+el[1]);
+					vertic.agregar(act);
+					
+				}
+				modelo.cargarMapaNVertices(vertic);
 
 				break;	
 
 			case 6: 
+				ArrayList<ArrayList<Integer>>re=modelo.darGrafo().darVerticesComponentes();
 
+				for (int i = 0; i < re.size(); i++) {
+					System.out.println(re.get(i).size());
+				}
 				break;	
 
 			default: 

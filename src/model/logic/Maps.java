@@ -129,8 +129,6 @@ public class Maps extends MapView {
 					pathOpt.setStrokeWeight(2);
 					pathOpt.setGeodesic(false);
 					Polyline linea;
-					LatLng inic=inicio;
-					System.out.println(arcos.darTamano());
 					for (int i=0;i<arcos.darTamano();i++)
 					{
 						Interseccion arco=arcos.darElementoPos(i);
@@ -145,6 +143,73 @@ public class Maps extends MapView {
 					}
 					System.out.println("carga correcta de datos en el mapa camino");
 					initMap(map);
+
+				}
+			}
+		}
+				);
+	}
+	public Maps(ArregloDinamico<Coordenadas>cor)
+	{	
+		setOnMapReadyHandler( new MapReadyHandler() {
+			@Override
+			public void onMapReady(MapStatus status)
+			{
+
+
+				if ( status == MapStatus.MAP_STATUS_OK )
+				{
+					map = getMap();
+
+					ArregloDinamico<Coordenadas> aux = cor;
+					LatLng[] rta = new LatLng[aux.darTamano()];
+					for(int i=0; i< aux.darTamano();i++)
+					{
+						Coordenadas actual = aux.darElementoPos(i);
+						rta[i] = new LatLng(actual.darLatitud(), actual.darLongitud());
+					}
+					
+					// Configuracion de localizaciones intermedias del path (circulos)
+					CircleOptions middleLocOpt= new CircleOptions(); 
+					middleLocOpt.setFillColor("#00FF00");  // color de relleno
+					middleLocOpt.setFillOpacity(0.5);
+					middleLocOpt.setStrokeWeight(1.0);
+
+
+					for(int i=0; i<rta.length;i++)
+					{
+						Circle middleLoc1 = new Circle(map);
+						middleLoc1.setOptions(middleLocOpt);
+						middleLoc1.setCenter(rta[i]); 
+						middleLoc1.setRadius(20); //Radio del circulo
+					}
+
+
+
+					//Configuracion de la linea del camino
+					PolylineOptions pathOpt = new PolylineOptions();
+					pathOpt.setStrokeColor("#000000");	  // color de linea	
+					pathOpt.setStrokeOpacity(4);
+					pathOpt.setStrokeWeight(2);
+					pathOpt.setGeodesic(false);
+					Polyline linea;
+					/*
+					for (int i=0;i<arcos.darTamano();i++)
+					{
+						Interseccion arco=arcos.darElementoPos(i);
+						linea = new Polyline(map); 														
+						linea.setOptions(pathOpt);
+						System.out.println("here");
+						System.out.println(arco.getLatin()+"."+arco.getLonin());
+						System.out.println(arco.getLatin1()+"."+arco.getLonin2());
+						LatLng[] coordenadas = {new LatLng(arco.getLatin(),arco.getLonin()), new LatLng(arco.getLatin1(),arco.getLonin2())};
+						linea.setPath(coordenadas);
+						
+					}
+					*/
+					initMap(map);
+					System.out.println("carga correcta de datos en el mapa camino");
+					
 
 				}
 			}

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
 import java.util.Iterator;
 
 import com.google.gson.reflect.TypeToken;
@@ -268,7 +269,31 @@ public class MVCModelo
 		Maps maps = new Maps(sacarCoordenadasVertices(),darsubGrafo(),darArcosRango());
 		maps.initFrame("Mapa");
 	}
-	
+
+	public ArregloDinamico<String>darNVerticesConMenorVelocidad(){
+		ArregloDinamico<String>ret=new ArregloDinamico<String>(300000);
+		for (int i = 0; i < grafo.darCapacidad(); i++) {
+			double cant=0.0;
+			ArregloDinamico<Arco<Integer>>adj=grafo.adyacentes(i)	;			
+			for (int j = 0; adj!=null&&j < adj.darTamano(); j++) {
+				Arco<Integer>actual=adj.darElementoPos(j);
+				cant+=actual.getCosto3();	
+		
+			}
+			if(adj!=null&&adj.darTamano()>0) {
+				cant=cant/adj.darTamano();
+				DecimalFormat df = new DecimalFormat("#.########");
+				String next=df.format(cant);
+				ret.agregar(i+","+next);
+			}
+			
+		}
+		ret.shellSortStringDouble();;
+		return ret;
+
+
+	}
+
 	public void cargarMapaCamino(LatLng inicio,LatLng fin,ArregloDinamico<Interseccion>arcos) {
 		Maps maps = new Maps(inicio,fin,arcos);
 		maps.initFrame("Mapa");
@@ -279,7 +304,7 @@ public class MVCModelo
 		for (int i = 0; i < grafo.darCapacidad(); i++) {
 			Coordenadas actual=grafo.getVertexpos(i);
 			if(actual!=null&&actual.darLatitud()==lat&&actual.darLongitud()==lon) {
-				
+
 				pos= grafo.getVertexPosi(i);
 			}
 		}		
@@ -291,5 +316,11 @@ public class MVCModelo
 		return inter;
 
 	}
+	public void cargarMapaNVertices(ArregloDinamico<Coordenadas>arcos) {
+		Maps maps = new Maps(arcos);
+		maps.initFrame("Mapa");
+	}
+
+	
 
 }
