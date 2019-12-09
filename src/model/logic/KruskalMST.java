@@ -2,22 +2,19 @@ package model.logic;
 
 import java.util.Arrays;
 
+import model.data_structures.ArregloDinamico;
+
 public class KruskalMST {
-	public KruskalMST(int v, int e)  //Toca practicamente crear un grafo nuevo, no importa porque se usa el resultado del conectado más grande
-	{
-		V = v;
-		E = e;
-		edge = new Edge[E];
-		for (int i=0; i<e; ++i)
-			edge[i] = new Edge();
-	}
+	private Edge[] mst;
 	class Edge implements Comparable<Edge> //Clase de arcos interna para el algoritmo
 	{
-		int src, dest, weight;
+		int origen; 
+		int destino;
+		int peso; //Es necesario pasar el peso (haversine) a int...
 
 		public int compareTo(Edge compareEdge)
 		{
-			return this.weight-compareEdge.weight;
+			return this.peso-compareEdge.peso;
 		}
 	};
 	class subset
@@ -25,7 +22,15 @@ public class KruskalMST {
 		int parent; 
 		int rank;
 	};
-
+	public KruskalMST(int v, int e)  //Toca practicamente crear un grafo nuevo, no importa porque se usa el resultado del conectado más grande
+	{
+		V = v;
+		E = e;
+		edge = new Edge[E];
+		for (int i=0; i<e; ++i)
+			edge[i] = new Edge();
+		mst = new Edge[V];
+	}
 	int V; 
 	int E; 
 	Edge edge[];
@@ -82,8 +87,8 @@ public class KruskalMST {
 			Edge next_edge = new Edge();
 			next_edge = edge[i++];
 
-			int x = find(subsets, next_edge.src);
-			int y = find(subsets, next_edge.dest);
+			int x = find(subsets, next_edge.origen);
+			int y = find(subsets, next_edge.destino);
 
 			if (x != y)
 			{
@@ -91,6 +96,18 @@ public class KruskalMST {
 				Union(subsets, x, y);
 			}
 		}
+		mst = result;
 	}
+	public void imprimirRta()
+	{
+		System.out.println(mst.length);
+		for(int i=0; i<mst.length; i++)
+		{
+			System.out.println("Id inicial: "+ mst[i].origen);
+			System.out.println("Id final: " + mst[i].destino);
+			System.out.println("Costo total: " + mst[i].peso);
+		}
+	}
+
 
 }

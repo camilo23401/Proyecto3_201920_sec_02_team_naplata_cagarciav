@@ -5,14 +5,14 @@ import model.data_structures.ArregloDinamico;
 import model.data_structures.GrafoNoDirigido;
 import model.data_structures.Stack;
 
-public class Djikstra {
+public class Djikstra2 {
 
 	private double[] distTo;         
 	private Arco<Integer>[] edgeTo;  
 	private IndexMinPQ<Double> pq;   
 
 
-	public Djikstra(GrafoNoDirigido<Integer,Coordenadas> G, int s) {
+	public Djikstra2(GrafoNoDirigido<Integer,Coordenadas> G, int s) {
 
 		distTo = new double[G.V()];
 		edgeTo = new Arco[G.V()];
