@@ -150,9 +150,11 @@ public class HashSeparateChaining<K extends Comparable<K>,V> implements HashTabl
 	public int getSetSize(K llave) {
 		Iterator<V>set=this.getSet(llave);
 		int i = 0;
+		if(set!=null) {
 		while(set.hasNext()) {
 			i++;
 			set.next();
+		}
 		}
 		return i;
 	}

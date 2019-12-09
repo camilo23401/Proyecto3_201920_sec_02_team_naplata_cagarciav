@@ -15,7 +15,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.opencsv.CSVReader;
-import model.logic.*;
 import com.teamdev.jxmaps.LatLng;
 import com.teamdev.jxmaps.Polyline;
 
@@ -41,8 +40,14 @@ public class MVCModelo
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(5000);
 	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(1000000);
 	private ArregloDinamico<Interseccion>inter=new ArregloDinamico<Interseccion>(7000);
+	private ArregloDinamico<Interseccion>interZonas=new ArregloDinamico<Interseccion>(7000);
+	
 	private GrafoNoDirigido<Integer,Coordenadas>subGn;
-
+	private GrafoNoDirigido<Integer, Coordenadas> grafoZonas = new GrafoNoDirigido<Integer, Coordenadas>(500000);
+	public ArregloDinamico<Coordenadas>corZonas=new ArregloDinamico<Coordenadas>(7000);
+	private HashSeparateChaining<String, Boolean> hayvisaje = new HashSeparateChaining<String, Boolean>(1000000);
+	
+	
 	public void cargarInfo() throws IOException
 	{
 		cargarViajesSemanales();
@@ -61,6 +66,11 @@ public class MVCModelo
 			if(longitud>=-74.094723 && longitud<= -74.062707 && latitud>=4.597714 && latitud<=4.621360)
 			{
 				subGrafo.addVertex(Integer.parseInt(partes[0]), interseccion);
+			}
+			if(grafoZonas.getInfoVertex(Integer.parseInt(partes[3]))==null){
+				grafoZonas.addVertex(Integer.parseInt(partes[3]), interseccion);
+				corZonas.agregar(interseccion);
+
 			}
 			grafo.addVertex(Integer.parseInt(partes[0]),interseccion);
 			cont++;
@@ -92,18 +102,37 @@ public class MVCModelo
 					{
 						Interseccion agregado=new Interseccion(lat1,lon1,lat2,lon2);
 						inter.agregar(agregado);
+						
 					}
+					int idinic=this.darIdVertice(lon1, lat1);
+					int idFin=this.darIdVertice(lon2, lat2);
+				
+					
+					
 				}
 				i++;
 			}
 
 			linea2 = lector2.readLine();
-
+			
 		}	
-
+	
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
 
+	}
+	
+	public boolean buscarSihayviajes(int inic,int end) {
+		boolean hay=false;
+		ViajeUber ac=viajesSemanales.get(inic+"-"+end);
+		if(ac!=null&&hayvisaje.get(inic+"-"+end)==false) {
+			hay=true;
+			hayvisaje.setValue(inic+"-"+end, true);
+			if(viajesSemanales.get(end+"-"+inic)!=null) {
+			hayvisaje.setValue(end+"-"+inic, true);
+			}
+		}
+		return hay;
 	}
 	public int cargarViajesSemanales() throws IOException
 	{
@@ -117,6 +146,8 @@ public class MVCModelo
 			{
 				ViajeUber viajeNuevo = new ViajeUber(Integer.parseInt(siguiente[0]), Integer.parseInt(siguiente[1]), Short.parseShort("-1"), Double.parseDouble(siguiente[3]), Short.parseShort("-1"), Short.parseShort(siguiente[2]), Double.parseDouble(siguiente[4]), Double.parseDouble(siguiente[5]), Double.parseDouble(siguiente[6]));
 				viajesSemanales.putInSet(siguiente[0]+"-"+siguiente[1], viajeNuevo);
+				hayvisaje.putInSet(siguiente[0]+"-"+siguiente[1], false);
+				
 			}
 			contador++;
 		}
@@ -320,9 +351,11 @@ public class MVCModelo
 
 	}
 	public void cargarMapaNVertices(ArregloDinamico<Coordenadas>arcos) {
-		Maps maps = new Maps(arcos);
+		Maps maps = new Maps(arcos,0);
 		maps.initFrame("Mapa");
 	}
+
+
 
 	public GrafoNoDirigido<Integer,Coordenadas>darSubGrafoN(ArregloDinamico<Coordenadas>vertic){
 		subGn=new GrafoNoDirigido<Integer,Coordenadas>(100);
@@ -398,5 +431,13 @@ public class MVCModelo
 		}
 		System.out.println(rta.darTamano());
 		return rta;
+	}
+	public GrafoNoDirigido<Integer, Coordenadas> dargrafoZonas(){
+		return grafoZonas;
+	}
+	
+	public void cargarMapasZonas() {
+		Maps maps = new Maps(corZonas);
+		maps.initFrame("Mapa");
 	}
 }

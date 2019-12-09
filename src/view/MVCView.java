@@ -21,6 +21,7 @@ public class MVCView
 			System.out.println("5.Determinar	los	n vértices	con	menor	velocidad promedio	en	la	ciudad	de	Bogotá."); 
 			System.out.println("6.Calcular	 un	 árbol	 de	 expansión	 mínima	 (MST)	 con	 criterio	 distancia" );
 
+			System.out.println("10.Cargar mapas zonas" );
 
 			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}

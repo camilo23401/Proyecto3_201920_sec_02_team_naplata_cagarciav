@@ -88,6 +88,59 @@ public class Maps extends MapView {
 				);
 	}
 
+	public Maps(ArregloDinamico<Coordenadas>  pArreglo)
+	{	
+		setOnMapReadyHandler( new MapReadyHandler() {
+			@Override
+			public void onMapReady(MapStatus status)
+			{
+
+				ArregloDinamico<Coordenadas> aux = pArreglo;
+				LatLng[] rta = new LatLng[aux.darTamano()];
+				for(int i=0; i< aux.darTamano();i++)
+				{
+					Coordenadas actual = aux.darElementoPos(i);
+					rta[i] = new LatLng(actual.darLatitud(), actual.darLongitud());
+				}
+
+				if ( status == MapStatus.MAP_STATUS_OK )
+				{
+					map = getMap();
+
+
+					// Configuracion de localizaciones intermedias del path (circulos)
+					CircleOptions middleLocOpt= new CircleOptions(); 
+					middleLocOpt.setFillColor("#00FF00");  // color de relleno
+					middleLocOpt.setFillOpacity(0.5);
+					middleLocOpt.setStrokeWeight(1.0);
+
+					for(int i=0; i<rta.length;i++)
+					{
+						Circle middleLoc1 = new Circle(map);
+						middleLoc1.setOptions(middleLocOpt);
+						middleLoc1.setCenter(rta[i]); 
+						middleLoc1.setRadius(50); //Radio del circulo
+					}
+
+					map.setCenter(rta[0]);
+					map.setZoom(15.0);
+
+					//Configuracion de la linea del camino
+					PolylineOptions pathOpt = new PolylineOptions();
+					pathOpt.setStrokeColor("#000000");	  // color de linea	
+					pathOpt.setStrokeOpacity(4);
+					pathOpt.setStrokeWeight(2);
+					pathOpt.setGeodesic(false);
+					Polyline linea;
+					
+					System.out.println("carga correcta de datos en el mapa camino");
+					initMap(map);
+
+				}
+			}
+		}
+				);
+	}
 	public Maps(LatLng inicio,LatLng fin,ArregloDinamico<Interseccion>arcos)
 	{	
 		setOnMapReadyHandler( new MapReadyHandler() {
@@ -149,7 +202,7 @@ public class Maps extends MapView {
 		}
 				);
 	}
-	public Maps(ArregloDinamico<Coordenadas>cor)
+	public Maps(ArregloDinamico<Coordenadas>cor,int n)
 	{	
 		setOnMapReadyHandler( new MapReadyHandler() {
 			@Override

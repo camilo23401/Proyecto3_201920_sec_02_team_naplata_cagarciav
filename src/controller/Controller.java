@@ -8,6 +8,7 @@ import com.teamdev.jxmaps.LatLng;
 
 import model.data_structures.Arco;
 import model.data_structures.ArregloDinamico;
+import model.data_structures.GrafoNoDirigido;
 import model.data_structures.HashSeparateChaining;
 import model.logic.Coordenadas;
 import model.logic.Djikstra;
@@ -154,16 +155,16 @@ public class Controller {
 					Coordenadas act=modelo.darGrafo().getInfoVertex(Integer.parseInt(el[0]));
 					System.out.println(el[0]+", "+act.darLatitud()+", "+act.darLongitud()+","+el[1]);
 					vertic.agregar(act);
-					
+
 				}
-			
+				System.out.println("Cantidad componentes conectadas: "+0);
 				modelo.cargarMapaNVertices(vertic);
 
 				break;	
 
 			case 6: 
-				
-			
+
+
 				break;	
 			case 7:
 				System.out.println("Ingresar longitud de origen");
@@ -175,9 +176,17 @@ public class Controller {
 				System.out.println("Ingresar latitud de destino");
 				double lati2  =  Double.parseDouble(lector.next());
 				modelo.menosCostosoHaversine(lati1, long1, lati2, long2);
-			    break;
-                default: 
 				break;
+			default: 
+				break;
+
+			case 10: 
+				modelo.cargarMapasZonas();
+				System.out.println("Cantidad vertices : "+modelo.corZonas.darTamano());
+
+
+
+				break;	
 			}
 		}
 
