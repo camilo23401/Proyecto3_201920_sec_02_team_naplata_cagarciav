@@ -178,8 +178,17 @@ public class Controller {
 				modelo.menosCostosoHaversine(lati1, long1, lati2, long2);
 				break;
 			case 8:
+				System.out.println("Ingresar longitud de origen");
+				double long3 = Double.parseDouble(lector.next());
+				System.out.println("Ingresar latitud de origen");
+				double lati3 = Double.parseDouble(lector.next());
+				System.out.println("Ingresar tiempo");
+				int tiempo = Integer.parseInt(lector.next());
+				int vertice = modelo.darIdVertice(long3, lati3);
+				modelo.encontrarVerticesAlcanzables(tiempo, vertice);
 				break;
 			case 9:
+				modelo.mstDistanciaKruskal();
 				break;
 
 			case 10: 

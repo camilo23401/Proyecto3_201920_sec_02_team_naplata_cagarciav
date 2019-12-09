@@ -1,35 +1,33 @@
 package model.logic;
 
-public class Vertice implements Comparable<Vertice>
-{
-	private int id;
-	private double longitud;
-	private double latitud;
+import java.util.ArrayList;
 
-	public Vertice(int pId, double pLongitud, double pLatitud)
-	{
-		id = pId;
-		longitud = pLongitud;
-		latitud = pLatitud;
+import model.data_structures.Arco;
+public class Vertice <K extends Comparable <K>,V> implements Comparable<Vertice<K,V>>{
 
-	}
-	public int darId()
+	public K key;
+	public V val;
+	public boolean marcado;
+	public int componentesConectadas;
+	public ArrayList<Arco <K>> arcos;
+
+	public Vertice(K pLlave, V pValor)
 	{
-		return id;
+		key = pLlave;
+		val = pValor;
+		componentesConectadas = 0;
+		arcos = new ArrayList<Arco<K>>();
+		marcado = false;
 	}
-	public double darLongitud()
+
+	public void validar()
 	{
-		return longitud;
-	}
-	public double darLatitud()
-	{
-		return latitud;
+		marcado = true;
 	}
 
 	@Override
-	public int compareTo(Vertice o) {
+	public int compareTo(Vertice<K, V> o) {
 		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
-
 }

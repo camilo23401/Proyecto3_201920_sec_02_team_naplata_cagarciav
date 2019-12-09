@@ -463,4 +463,26 @@ public class MVCModelo
 		Maps maps = new Maps(corZonas);
 		maps.initFrame("Mapa");
 	}
+	public Vertice<Integer, Coordenadas> verticeMasCercano(double pLat, double pLon)
+	{
+		Iterator<Integer> it = grafo.recuperados.keys();
+		Integer primerRecuperado = it.next();
+		Vertice<Integer, Coordenadas> rta = grafo.recuperados.get(primerRecuperado);
+		double diferenciaLon = Math.abs(pLon - grafo.recuperados.get(primerRecuperado).val.darLongitud());
+		double diferenciaLat = Math.abs(pLat - grafo.recuperados.get(primerRecuperado).val.darLatitud());
+		double diferenciaTotal = diferenciaLon + diferenciaLat;
+		while(it.hasNext())
+		{
+			int i = it.next();
+			double difLongitud = Math.abs(pLon - grafo.recuperados.get(i).val.darLongitud());
+			double difLatitud = Math.abs(pLat - grafo.recuperados.get(i).val.darLatitud());
+			double diferenciaActual = difLongitud + difLatitud;
+			if(diferenciaActual<diferenciaTotal)
+			{
+				diferenciaTotal = diferenciaActual;
+				rta = grafo.recuperados.get(i);
+			}
+		}
+		return rta;
+	}
 }
