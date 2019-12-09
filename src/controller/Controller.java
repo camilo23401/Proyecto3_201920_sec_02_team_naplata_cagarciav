@@ -12,6 +12,7 @@ import model.data_structures.GrafoNoDirigido;
 import model.data_structures.HashSeparateChaining;
 import model.logic.Coordenadas;
 import model.logic.Djikstra;
+import model.logic.Djikstra2;
 import model.logic.Interseccion;
 import model.logic.MVCModelo;
 import view.MVCView;
@@ -123,7 +124,7 @@ public class Controller {
 					}
 					ArregloDinamico<Interseccion>cor=new ArregloDinamico<Interseccion>(1000);
 					Coordenadas inic=new Coordenadas(lat1,lon1,0);
-					for (int i = path.darTamano(); i >0; i--) {
+					for (int i = path.darTamano()-1; i >=0; i--) {
 						Arco<Integer>act3=path.darElementoPos(i);
 						Coordenadas act=modelo.darGrafo().getInfoVertex(act3.getDestino());
 						Interseccion agrega=new Interseccion(inic.darLatitud(),inic.darLongitud(),act.darLatitud(),act.darLongitud());
@@ -168,14 +169,48 @@ public class Controller {
 				break;	
 			case 7:
 				System.out.println("Ingresar longitud de origen");
-				double long1  = Double.parseDouble(lector.next());
+				double lon3  = Double.parseDouble(lector.next());
 				System.out.println("Ingresar latitud de origen");
-				double lati1 = Double.parseDouble(lector.next());
+				double lat3 = Double.parseDouble(lector.next());
+				int vinic2=modelo.darIdVertice(lon3, lat3);					
 				System.out.println("Ingresar longitud de destino");
-				double long2  =  Double.parseDouble(lector.next());
+				double lon4  =  Double.parseDouble(lector.next());
 				System.out.println("Ingresar latitud de destino");
-				double lati2  =  Double.parseDouble(lector.next());
-				modelo.menosCostosoHaversine(lati1, long1, lati2, long2);
+				double lat4  =  Double.parseDouble(lector.next());
+				int vinfin2=modelo.darIdVertice(lon4, lat4);	
+				if(vinic2!=-1||vinfin2!=-1) {
+					Djikstra2 dk=new Djikstra2(modelo.darGrafo(),vinic2);
+					ArregloDinamico<Arco<Integer>>path= dk.pathTo(vinfin2);
+					double tiempoPromedio=0.0;
+					double hav=0.0;
+					System.out.println("Cantidad Vertices: "+path.darTamano());
+					System.out.println("ID,latitud,longitud");
+					for (int i = 0; i < path.darTamano(); i++) {
+						Arco<Integer>actual=path.darElementoPos(i);
+						Coordenadas act=modelo.darGrafo().getInfoVertex(actual.getDestino());
+						System.out.println((i+1)+"."+actual.getDestino()+","+act.darLatitud()+","+act.darLongitud());
+						tiempoPromedio=+actual.getCosto2();
+						hav=+actual.getCosto();
+					}
+					ArregloDinamico<Interseccion>cor=new ArregloDinamico<Interseccion>(1000);
+					Coordenadas inic=new Coordenadas(lat3,lon3,0);
+					for (int i = path.darTamano()-1; i >=0; i--) {
+						Arco<Integer>act3=path.darElementoPos(i);
+						Coordenadas act=modelo.darGrafo().getInfoVertex(act3.getDestino());
+						Interseccion agrega=new Interseccion(inic.darLatitud(),inic.darLongitud(),act.darLatitud(),act.darLongitud());
+						cor.agregar(agrega);
+						inic=new Coordenadas(agrega.getLatin1(),agrega.getLonin2(),0);
+					}
+					tiempoPromedio=tiempoPromedio/path.darTamano();
+					System.out.println("Tiempo Promedio "+tiempoPromedio);
+					System.out.println("Distancia Haversine "+hav);
+					LatLng inic2=new LatLng(lat3, lon3);
+					LatLng fini=new LatLng(lat4, lon4);
+					modelo.cargarMapaCamino(inic2, fini, cor);
+
+				}else {
+					System.out.println("No hay vertices con estas caracteristicas");
+				}
 				break;
 			case 8:
 				System.out.println("Ingresar longitud de origen");
