@@ -162,8 +162,7 @@ public class Controller {
 				break;	
 
 			case 6: 
-				HashSeparateChaining<Integer, Integer>re=modelo.darGrafo().darVerticesComponentes();
-
+				
 			
 				break;	
 			case 7:
