@@ -7,15 +7,11 @@ import model.data_structures.Queue;
 public class PrimMST {
     private static final double FLOATING_POINT_EPSILON = 1E-12;
 
-    private Arco<Integer>[] edgeTo;        // edgeTo[v] = shortest edge from tree vertex to non-tree vertex
-    private double[] distTo;      // distTo[v] = weight of shortest such edge
-    private boolean[] marked;     // marked[v] = true if v on tree, false otherwise
+    private Arco<Integer>[] edgeTo;        
+    private double[] distTo;      
+    private boolean[] marked;     
     private IndexMinPQ<Double> pq;
 
-    /**
-     * Compute a minimum spanning tree (or forest) of an edge-weighted graph.
-     * @param G the edge-weighted graph
-     */
     public PrimMST(GrafoNoDirigido G) {
         edgeTo = new Arco[G.V()];
         distTo = new double[G.V()];
@@ -24,14 +20,12 @@ public class PrimMST {
         for (int v = 0; v < G.V(); v++)
             distTo[v] = Double.POSITIVE_INFINITY;
 
-        for (int v = 0; v < G.V(); v++)      // run from each vertex to find
-            if (!marked[v]) prim(G, v);      // minimum spanning forest
+        for (int v = 0; v < G.V(); v++)      
+            if (!marked[v]) prim(G, v);      
 
        
     }
-
-    // run Prim's algorithm in graph G, starting from vertex s
-    private void prim(GrafoNoDirigido<Integer,Coordenadas> G, int s) {
+    private void prim(GrafoNoDirigido<Integer,Coordenadas> G, int s) { //Corre el algoritmo en el grafo G desde el vértice S
         distTo[s] = 0.0;
         pq.insert(s, distTo[s]);
         while (!pq.isEmpty()) {
@@ -39,8 +33,6 @@ public class PrimMST {
             scan(G, v);
         }
     }
-
-   
     private void scan(GrafoNoDirigido<Integer,Coordenadas> G, int v) {
         marked[v] = true;
         for (Arco e : G.adyacentes(v)) {
@@ -54,13 +46,7 @@ public class PrimMST {
             }
         }
     }
-
-    /**
-     * Returns the edges in a minimum spanning tree (or forest).
-     * @return the edges in a minimum spanning tree (or forest) as
-     *    an iterable of edges
-     */
-    public Iterable<Arco> edges() {
+    public Iterable<Arco> darArcos() {
         Queue<Arco> mst = new Queue<Arco>();
         for (int v = 0; v < edgeTo.length; v++) {
             Arco e = edgeTo[v];
@@ -70,14 +56,9 @@ public class PrimMST {
         }
         return mst;
     }
-
-    /**
-     * Returns the sum of the edge weights in a minimum spanning tree (or forest).
-     * @return the sum of the edge weights in a minimum spanning tree (or forest)
-     */
     public double weight() {
         double weight = 0.0;
-        for (Arco e : edges())
+        for (Arco e : darArcos())
             weight += e.getCosto();
         return weight;
     }
