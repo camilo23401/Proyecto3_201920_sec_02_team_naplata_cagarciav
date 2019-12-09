@@ -45,7 +45,11 @@ public class Arco<R> implements  Comparable <Arco<R>> {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-
+		public R other(R vertex) {
+	        if      (vertex == origen) return destino;
+	        else if (vertex == destino) return origen;
+	        else throw new IllegalArgumentException("Illegal endpoint");
+	    }
 
 	}
 

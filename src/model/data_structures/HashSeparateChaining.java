@@ -9,6 +9,8 @@ public class HashSeparateChaining<K extends Comparable<K>,V> implements HashTabl
 	private int capacidad;
 
 	private ArregloDinamico<NodoHash<K,V>>listaNodos;
+	
+	
 
 	public int size() {
 		return tamanio;

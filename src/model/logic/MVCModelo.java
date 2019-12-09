@@ -40,6 +40,8 @@ public class MVCModelo
 	private GrafoNoDirigido<Integer, Coordenadas> subGrafo = new GrafoNoDirigido<Integer, Coordenadas>(5000);
 	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(1000000);
 	private ArregloDinamico<Interseccion>inter=new ArregloDinamico<Interseccion>(7000);
+	private GrafoNoDirigido<Integer,Coordenadas>subGn;
+
 	public void cargarInfo() throws IOException
 	{
 		cargarViajesSemanales();
@@ -278,7 +280,7 @@ public class MVCModelo
 			for (int j = 0; adj!=null&&j < adj.darTamano(); j++) {
 				Arco<Integer>actual=adj.darElementoPos(j);
 				cant+=actual.getCosto3();	
-		
+
 			}
 			if(adj!=null&&adj.darTamano()>0) {
 				cant=cant/adj.darTamano();
@@ -286,7 +288,7 @@ public class MVCModelo
 				String next=df.format(cant);
 				ret.agregar(i+","+next);
 			}
-			
+
 		}
 		ret.shellSortStringDouble();;
 		return ret;
@@ -321,6 +323,27 @@ public class MVCModelo
 		maps.initFrame("Mapa");
 	}
 
-	
+	public GrafoNoDirigido<Integer,Coordenadas>darSubGrafoN(ArregloDinamico<Coordenadas>vertic){
+		subGn=new GrafoNoDirigido<Integer,Coordenadas>(100);
+		for (int i = 0; i < vertic.darTamano();i++) {
+			Coordenadas actual=vertic.darElementoPos(i);
+			int id=this.darIdVertice(actual.darLongitud(), actual.darLatitud());
+			subGn.addVertex(id, actual);
+			ArregloDinamico<Arco<Integer>>adj=grafo.adyacentes(id);
+			for (int j = 0; j < adj.darTamano(); j++) {
+				Arco<Integer>act=adj.darElementoPos(j);
+				for (int j2 = 0; j2 < vertic.darTamano(); j2++) {
+					Coordenadas actual1=vertic.darElementoPos(j2);
+					int id1=this.darIdVertice(actual1.darLongitud(), actual1.darLongitud());
+					if(act.getDestino()==id1) {
+						subGn.addEdge(id, act.getDestino(), act.getCosto(), act.getCosto2(), act.getCosto3());
+					}
 
+				}
+			}
+
+		}
+		System.out.println(subGn.E());
+		return subGn;
+	}
 }

@@ -51,7 +51,7 @@ public class Djikstra {
     private void relax(Arco<Integer> e) {
         int v = e.getOrigen(), w = e.getDestino();
         if (distTo[w] > distTo[v] + e.getCosto2()) {
-            distTo[w] = distTo[v] + e.getCosto();
+            distTo[w] = distTo[v] + e.getCosto2();
             edgeTo[w] = e;
             if (pq.contains(w)) pq.decreaseKey(w, distTo[w]);
             else                pq.insert(w, distTo[w]);

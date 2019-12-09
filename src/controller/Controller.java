@@ -8,6 +8,7 @@ import com.teamdev.jxmaps.LatLng;
 
 import model.data_structures.Arco;
 import model.data_structures.ArregloDinamico;
+import model.data_structures.HashSeparateChaining;
 import model.logic.Coordenadas;
 import model.logic.Djikstra;
 import model.logic.Interseccion;
@@ -54,7 +55,6 @@ public class Controller {
 					System.out.println("Hay "+conec+" componentes conectadas");
 					System.out.println("5 componentes mas conectadas");
 					ArregloDinamico<String>nov=modelo.dar5componentes();
-					System.out.println(nov.darTamano());
 					for (int i = 0; i < 5; i++) {
 						System.out.println((i+1)+". Vertices Conectados: "+nov.darElementoPos(i).split(",")[1]);
 					}
@@ -156,16 +156,15 @@ public class Controller {
 					vertic.agregar(act);
 					
 				}
+			
 				modelo.cargarMapaNVertices(vertic);
 
 				break;	
 
 			case 6: 
-				ArrayList<ArrayList<Integer>>re=modelo.darGrafo().darVerticesComponentes();
+				HashSeparateChaining<Integer, Integer>re=modelo.darGrafo().darVerticesComponentes();
 
-				for (int i = 0; i < re.size(); i++) {
-					System.out.println(re.get(i).size());
-				}
+			
 				break;	
 
 			default: 
