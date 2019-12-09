@@ -380,7 +380,7 @@ public class MVCModelo
 	public void menosCostosoHaversine(double pLat1, double pLon1, double pLat2, double pLon2)
 	{
 		int idInicial = darIdVertice(pLon1, pLat1);
-		int idFinal = darIdVertice(pLon2, pLat2);
+		int idFinal = darIdVertice(pLon1, pLat1);
 		if(idInicial!=-1||idFinal!=-1) {
 			Djikstra2 algoritmo =new Djikstra2(grafo,idInicial);
 			ArregloDinamico<Arco<Integer>>path= algoritmo.pathTo(idFinal);
@@ -461,24 +461,24 @@ public class MVCModelo
 	}
 	public int verticeMasCercano(double pLat, double pLon)
 	{
-		Iterator<Integer> it = grafo.recuperados.keys();
+		Iterator<Integer> it = grafo.val.keys();
 		Integer primerRecuperado = it.next();
-		Coordenadas rta = grafo.recuperados.get(primerRecuperado);
-		double diferenciaLon = Math.abs(pLon - grafo.recuperados.get(primerRecuperado).darLongitud());
-		double diferenciaLat = Math.abs(pLat - grafo.recuperados.get(primerRecuperado).darLatitud());
+		Coordenadas rta = grafo.val.get(primerRecuperado);
+		double diferenciaLon = Math.abs(pLon - grafo.val.get(primerRecuperado).darLongitud());
+		double diferenciaLat = Math.abs(pLat - grafo.val.get(primerRecuperado).darLatitud());
 		double diferenciaTotal = diferenciaLon + diferenciaLat;
 		while(it.hasNext())
 		{
 			int i = it.next();
-			double difLongitud = Math.abs(pLon - grafo.recuperados.get(i).darLongitud());
-			double difLatitud = Math.abs(pLat - grafo.recuperados.get(i).darLatitud());
+			double difLongitud = Math.abs(pLon - grafo.val.get(i).darLongitud());
+			double difLatitud = Math.abs(pLat - grafo.val.get(i).darLatitud());
 			double diferenciaActual = difLongitud + difLatitud;
 			if(diferenciaActual<diferenciaTotal)
 			{
 				diferenciaTotal = diferenciaActual;
-				rta = grafo.recuperados.get(i);
+				rta = grafo.val.get(i);
 			}
 		}
-		return grafo.recuperados.getKeyWithValue(rta);
+		return grafo.val.getKeyWithValue(rta);
 	}
 }

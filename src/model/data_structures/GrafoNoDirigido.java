@@ -12,7 +12,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	//cantidad de arcos
 	private int E;
 	//lista de adyacencia
-	private HashSeparateChaining<K,T>val;
+	public HashSeparateChaining<K,T>val;
 	private HashSeparateChaining<K, ArregloDinamico<Arco<K>>> adj;
 	private HashSeparateChaining<K,Boolean>mark;
 	public HashSeparateChaining<K, T> recuperados;
