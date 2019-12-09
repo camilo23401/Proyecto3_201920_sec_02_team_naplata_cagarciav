@@ -177,16 +177,19 @@ public class Controller {
 				double lati2  =  Double.parseDouble(lector.next());
 				modelo.menosCostosoHaversine(lati1, long1, lati2, long2);
 				break;
-			default: 
+			case 8:
+				break;
+			case 9:
 				break;
 
 			case 10: 
 				modelo.cargarMapasZonas();
 				System.out.println("Cantidad vertices : "+modelo.corZonas.darTamano());
+				break;
+				
+			default: 
+				break;
 
-
-
-				break;	
 			}
 		}
 

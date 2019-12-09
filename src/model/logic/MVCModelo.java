@@ -41,13 +41,13 @@ public class MVCModelo
 	private HashSeparateChaining<String, ViajeUber> viajesSemanales = new HashSeparateChaining<String, ViajeUber>(1000000);
 	private ArregloDinamico<Interseccion>inter=new ArregloDinamico<Interseccion>(7000);
 	private ArregloDinamico<Interseccion>interZonas=new ArregloDinamico<Interseccion>(7000);
-	
+
 	private GrafoNoDirigido<Integer,Coordenadas>subGn;
 	private GrafoNoDirigido<Integer, Coordenadas> grafoZonas = new GrafoNoDirigido<Integer, Coordenadas>(500000);
 	public ArregloDinamico<Coordenadas>corZonas=new ArregloDinamico<Coordenadas>(7000);
 	private HashSeparateChaining<String, Boolean> hayvisaje = new HashSeparateChaining<String, Boolean>(1000000);
-	
-	
+
+
 	public void cargarInfo() throws IOException
 	{
 		cargarViajesSemanales();
@@ -102,26 +102,26 @@ public class MVCModelo
 					{
 						Interseccion agregado=new Interseccion(lat1,lon1,lat2,lon2);
 						inter.agregar(agregado);
-						
+
 					}
 					int idinic=this.darIdVertice(lon1, lat1);
 					int idFin=this.darIdVertice(lon2, lat2);
-				
-					
-					
+
+
+
 				}
 				i++;
 			}
 
 			linea2 = lector2.readLine();
-			
+
 		}	
-	
+
 		System.out.println("Cantidad de vertices cargados:"+ grafo.V());
 		System.out.println("Cantidad de Arcos cargados:"+ grafo.E());
 
 	}
-	
+
 	public boolean buscarSihayviajes(int inic,int end) {
 		boolean hay=false;
 		ViajeUber ac=viajesSemanales.get(inic+"-"+end);
@@ -129,7 +129,7 @@ public class MVCModelo
 			hay=true;
 			hayvisaje.setValue(inic+"-"+end, true);
 			if(viajesSemanales.get(end+"-"+inic)!=null) {
-			hayvisaje.setValue(end+"-"+inic, true);
+				hayvisaje.setValue(end+"-"+inic, true);
 			}
 		}
 		return hay;
@@ -147,7 +147,7 @@ public class MVCModelo
 				ViajeUber viajeNuevo = new ViajeUber(Integer.parseInt(siguiente[0]), Integer.parseInt(siguiente[1]), Short.parseShort("-1"), Double.parseDouble(siguiente[3]), Short.parseShort("-1"), Short.parseShort(siguiente[2]), Double.parseDouble(siguiente[4]), Double.parseDouble(siguiente[5]), Double.parseDouble(siguiente[6]));
 				viajesSemanales.putInSet(siguiente[0]+"-"+siguiente[1], viajeNuevo);
 				hayvisaje.putInSet(siguiente[0]+"-"+siguiente[1], false);
-				
+
 			}
 			contador++;
 		}
@@ -429,8 +429,31 @@ public class MVCModelo
 				rta.agregar(actual.getDestino());
 			}
 		}
-		System.out.println(rta.darTamano());
+		System.out.println(rta.darTamano()+00);
 		return rta;
+	}
+	public GrafoNoDirigido<Integer, Coordenadas> conectadoMasGrandeGrafo()
+	{
+		return grafo;
+	}
+	public ArregloDinamico<Arco<Integer>> conectadoMasGrandeArreglo()
+	{
+		return grafo.adyacentes(10);
+	}
+	public void mstDistanciaKruskal()
+	{
+		GrafoNoDirigido<Integer, Coordenadas> aux = conectadoMasGrandeGrafo();
+		ArregloDinamico<Arco<Integer>> arreglo = conectadoMasGrandeArreglo();
+		KruskalMST kruskalMasConectados = new KruskalMST(aux.V(), aux.E());
+		for(int i=0;i<arreglo.darTamano();i++)
+		{
+			kruskalMasConectados.edge[i].origen = arreglo.darElementoPos(i).getOrigen();
+			kruskalMasConectados.edge[i].destino = arreglo.darElementoPos(i).getDestino();
+			kruskalMasConectados.edge[i].peso = (int)arreglo.darElementoPos(i).getCosto();
+		}
+		System.out.println(kruskalMasConectados.E + "Vs" + kruskalMasConectados.edge.length);
+		kruskalMasConectados.Kruskal();
+		kruskalMasConectados.imprimirRta();
 	}
 	public GrafoNoDirigido<Integer, Coordenadas> dargrafoZonas(){
 		return grafoZonas;
