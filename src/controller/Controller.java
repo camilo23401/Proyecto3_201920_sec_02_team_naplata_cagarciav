@@ -166,8 +166,18 @@ public class Controller {
 
 			
 				break;	
-
-			default: 
+			case 7:
+				System.out.println("Ingresar longitud de origen");
+				double long1  = Double.parseDouble(lector.next());
+				System.out.println("Ingresar latitud de origen");
+				double lati1 = Double.parseDouble(lector.next());
+				System.out.println("Ingresar longitud de destino");
+				double long2  =  Double.parseDouble(lector.next());
+				System.out.println("Ingresar latitud de destino");
+				double lati2  =  Double.parseDouble(lector.next());
+				modelo.menosCostosoHaversine(lati1, long1, lati2, long2);
+			    break;
+                default: 
 				break;
 			}
 		}

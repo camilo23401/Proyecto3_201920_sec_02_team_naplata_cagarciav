@@ -346,4 +346,56 @@ public class MVCModelo
 		System.out.println(subGn.E());
 		return subGn;
 	}
+	public void menosCostosoHaversine(double pLat1, double pLon1, double pLat2, double pLon2)
+	{
+		int idInicial = darIdVertice(pLon1, pLat1);
+		int idFinal = darIdVertice(pLon2, pLat2);
+		if(idInicial!=-1||idFinal!=-1) {
+			Djikstra2 algoritmo =new Djikstra2(grafo,idInicial);
+			ArregloDinamico<Arco<Integer>>path= algoritmo.pathTo(idFinal);
+			double tiempoPromedio=0.0;
+			double hav=0.0;
+			System.out.println("Cantidad Vertices: "+path.darTamano());
+			System.out.println("ID,latitud,longitud");
+			for (int i = 0; i < path.darTamano(); i++) {
+				Arco<Integer>actual=path.darElementoPos(i);
+				Coordenadas act=grafo.getInfoVertex(actual.getDestino());
+				System.out.println((i+1)+"."+actual.getDestino()+","+act.darLatitud()+","+act.darLongitud());
+				tiempoPromedio=+actual.getCosto2();
+				hav=+actual.getCosto();
+			}
+			ArregloDinamico<Interseccion>cor=new ArregloDinamico<Interseccion>(1000);
+			Coordenadas inic=new Coordenadas(pLat1,pLon1,0);
+			for (int i = path.darTamano(); i >0; i--) {
+				Arco<Integer>act3=path.darElementoPos(i);
+				Coordenadas act=grafo.getInfoVertex(act3.getDestino());
+				Interseccion agrega=new Interseccion(inic.darLatitud(),inic.darLongitud(),act.darLatitud(),act.darLongitud());
+				cor.agregar(agrega);
+				inic=new Coordenadas(agrega.getLatin1(),agrega.getLonin2(),0);
+			}
+			tiempoPromedio=tiempoPromedio/path.darTamano();
+			System.out.println("Tiempo Promedio "+tiempoPromedio);
+			System.out.println("Distancia Haversine "+hav);
+			LatLng inic2=new LatLng(pLat1, pLon1);
+			LatLng fin =new LatLng(pLat2, pLon2);
+			cargarMapaCamino(inic2, fin, cor);
+
+		}
+	}
+	public ArregloDinamico<Integer> encontrarVerticesAlcanzables(double pTiempo,int pIdVerticeDado)
+	{
+		ArregloDinamico<Arco<Integer>> adyacentes = grafo.adyacentes(pIdVerticeDado);
+		ArregloDinamico<Integer> rta = new ArregloDinamico<Integer>(100);
+		for(int i=0;i<adyacentes.darTamano();i++)
+		{
+			Arco<Integer> actual = adyacentes.darElementoPos(i);
+			System.out.println(actual.getCosto2());
+			if(actual.getCosto2()<=pTiempo)
+			{
+				rta.agregar(actual.getDestino());
+			}
+		}
+		System.out.println(rta.darTamano());
+		return rta;
+	}
 }
