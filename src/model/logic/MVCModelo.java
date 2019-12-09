@@ -104,11 +104,8 @@ public class MVCModelo
 						inter.agregar(agregado);
 
 					}
-					int idinic=this.darIdVertice(lon1, lat1);
-					int idFin=this.darIdVertice(lon2, lat2);
-
-
-
+					//int idinic=this.darIdVertice(lon1, lat1);
+					//int idFin=this.darIdVertice(lon2, lat2);
 				}
 				i++;
 			}
@@ -423,7 +420,6 @@ public class MVCModelo
 		for(int i=0;i<adyacentes.darTamano();i++)
 		{
 			Arco<Integer> actual = adyacentes.darElementoPos(i);
-			System.out.println(actual.getCosto2());
 			if(actual.getCosto2()<=pTiempo)
 			{
 				rta.agregar(actual.getDestino());
@@ -463,19 +459,19 @@ public class MVCModelo
 		Maps maps = new Maps(corZonas);
 		maps.initFrame("Mapa");
 	}
-	public Vertice<Integer, Coordenadas> verticeMasCercano(double pLat, double pLon)
+	public int verticeMasCercano(double pLat, double pLon)
 	{
 		Iterator<Integer> it = grafo.recuperados.keys();
 		Integer primerRecuperado = it.next();
-		Vertice<Integer, Coordenadas> rta = grafo.recuperados.get(primerRecuperado);
-		double diferenciaLon = Math.abs(pLon - grafo.recuperados.get(primerRecuperado).val.darLongitud());
-		double diferenciaLat = Math.abs(pLat - grafo.recuperados.get(primerRecuperado).val.darLatitud());
+		Coordenadas rta = grafo.recuperados.get(primerRecuperado);
+		double diferenciaLon = Math.abs(pLon - grafo.recuperados.get(primerRecuperado).darLongitud());
+		double diferenciaLat = Math.abs(pLat - grafo.recuperados.get(primerRecuperado).darLatitud());
 		double diferenciaTotal = diferenciaLon + diferenciaLat;
 		while(it.hasNext())
 		{
 			int i = it.next();
-			double difLongitud = Math.abs(pLon - grafo.recuperados.get(i).val.darLongitud());
-			double difLatitud = Math.abs(pLat - grafo.recuperados.get(i).val.darLatitud());
+			double difLongitud = Math.abs(pLon - grafo.recuperados.get(i).darLongitud());
+			double difLatitud = Math.abs(pLat - grafo.recuperados.get(i).darLatitud());
 			double diferenciaActual = difLongitud + difLatitud;
 			if(diferenciaActual<diferenciaTotal)
 			{
@@ -483,6 +479,6 @@ public class MVCModelo
 				rta = grafo.recuperados.get(i);
 			}
 		}
-		return rta;
+		return grafo.recuperados.getKeyWithValue(rta);
 	}
 }

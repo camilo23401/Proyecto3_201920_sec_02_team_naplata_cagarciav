@@ -15,7 +15,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 	private HashSeparateChaining<K,T>val;
 	private HashSeparateChaining<K, ArregloDinamico<Arco<K>>> adj;
 	private HashSeparateChaining<K,Boolean>mark;
-	public HashSeparateChaining<K, Vertice<K, T>> recuperados;
+	public HashSeparateChaining<K, T> recuperados;
 	private ArregloDinamico<Integer>cantidadConectados;
 	
 
@@ -35,7 +35,7 @@ public class GrafoNoDirigido<K extends Comparable<K>,T> {
 		mark=new HashSeparateChaining<K,Boolean>(tamanio);
 		cantidadConectados=new ArregloDinamico<Integer>(154);
 		count=0;
-		recuperados = new HashSeparateChaining<K, Vertice<K, T>>(tamanio);
+		recuperados = new HashSeparateChaining<K, T>(tamanio);
 
 
 	}
